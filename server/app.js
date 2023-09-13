@@ -18,7 +18,8 @@ db.once("open", () => {
   console.log("connected to database");
 });
 const productRoutes = require("./api/routes/products");
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
