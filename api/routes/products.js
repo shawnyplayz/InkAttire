@@ -1,6 +1,36 @@
 const express = require("express");
 const router = express.Router();
 const products = require("../models/products");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/webp"
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only Jpeg,Jpg and PNG file types are accepted"), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fieldSize: 1024 * 1024 * 2,
+  },
+  fileFilter: fileFilter,
+});
 
 // Getting All
 router.get("/", async (req, res, next) => {
@@ -14,18 +44,20 @@ router.get("/", async (req, res, next) => {
 // Getting One
 router.get("/:id", async (req, res, next) => {
   try {
-    const getOne = await products.findOne({ _id: req.params.id });
+    const getOne = await products.findOne({ sku: req.params.id });
     res.json(getOne);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 //Creating One
-router.post("/", async (req, res, next) => {
+router.post("/", upload.single("productImage"), async (req, res, next) => {
+  console.log("File==>", req.file);
   const createProd = new products({
     sku: req.body.sku,
     title: req.body.title,
     description: req.body.description,
+    productImage: req.file.filename,
     manufacture_details: req.body.manufacture_details,
     shipping_details: req.body.shipping_details,
     quantity: req.body.quantity,
