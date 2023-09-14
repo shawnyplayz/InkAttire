@@ -1,36 +1,95 @@
-var mongoose = require(mongoose),
-  User = require("../models/users");
+const users = require("../models/users");
+const express = require("express");
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcryptjs");
 
-var connStr = "mongodb://localhost:27017/mongoose-bcrypt-test";
-mongoose.connect(connStr, function (err) {
-  if (err) throw err;
-  console.log("Successfully connected to MongoDB");
-});
+const allUsers = async (req, res) => {
+  const allUsers = await users.find({});
+  try {
+    return res.json(allUsers);
+    next();
+  } catch (error) {
+    res.sendStatus(500).send({ message: error });
+  }
+};
 
-// create a user a new user
-var testUser = new User({
-  username: "Shilpa@Almeida",
-  password: "Password123",
-});
+const signup = async (req, res) => {
+  try {
+    // Get email and password off req body
+    const { userId, firstName, lastName, email, password, roleId, role } =
+      req.body;
+    //Check if the user exists
+    const checkSimilarUser = await users.findOne({ email });
+    if (checkSimilarUser)
+      return res.sendStatus(500).send({ message: "User already exists!" });
+    //hashing the password
+    const hashPassword = bcrypt.hashSync(password, 8);
+    //Create user
+    await users.create({
+      userId: userId,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: hashPassword,
+      roleId: roleId,
+      role: role,
+    });
 
-// save the user to database
-testUser.save(function (err) {
-  if (err) throw err;
-});
+    //respond
+    res.sendStatus(200);
+  } catch (error) {
+    res.sendStatus(400).send({ message: error });
+  }
+};
 
-// fetch the user and test password verification
-User.findOne({ username: "Shilpa@Almeida" }, function (err, user) {
-  if (err) throw err;
+const login = async (req, res) => {
+  try {
+    //Get all details off the req
+    const { email, password } = req.body;
+    console.log(password);
+    if (!(email || password)) {
+      return res
+        .status(400)
+        .json({ message: "Need to fill in both, email and password" });
+    }
+    //Find the user
+    const user = await users.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: "Incorrect email" });
+    }
+    //Compare sent in password with found user password hash
+    const passMatch = bcrypt.compareSync(password, user.password);
+    if (!passMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+    //Create a jwt token
+    const exp = Date.now() + 1000 * 60 * 60 * 24 * 30;
+    const token = jwt.sign({ encode: user._id, exp }, process.env.SECRET);
 
-  // test a matching password
-  user.comparePassword("Password123", function (err, isMatch) {
-    if (err) throw err;
-    console.log("Password123:", isMatch); // -&gt; Password123: true
-  });
+    //Create a cookie
+    res.cookie("Authorization", token, {
+      expires: new Date(exp),
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV == "production",
+    });
+    //send it
+    res.status(200).json({ email, token });
+  } catch (error) {
+    res.status(400).json({ error: error });
+  }
+};
 
-  // test a failing password
-  user.comparePassword("123Password", function (err, isMatch) {
-    if (err) throw err;
-    console.log("123Password:", isMatch); // -&gt; 123Password: false
-  });
-});
+const logout = (req, res) => {};
+
+const checkAuth = (req, res) => {
+  console.log("req.user==>", req.user);
+  return res.sendStatus(200);
+};
+module.exports = {
+  allUsers,
+  signup,
+  login,
+  logout,
+  checkAuth,
+};
