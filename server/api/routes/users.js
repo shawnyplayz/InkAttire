@@ -67,12 +67,12 @@ const login = async (req, res) => {
     const token = jwt.sign({ encode: user._id, exp }, process.env.SECRET);
 
     //Create a cookie
-    res.cookie("Authorization", token, {
-      expires: new Date(exp),
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV == "production",
-    });
+    // res.cookie("Authorization", token, {
+    //   expires: new Date(exp),
+    //   httpOnly: true,
+    //   sameSite: "lax",
+    //   secure: process.env.NODE_ENV == "production",
+    // });
     //send it
     res.status(200).json({ email, token });
   } catch (error) {

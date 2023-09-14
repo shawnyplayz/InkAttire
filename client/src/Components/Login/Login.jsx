@@ -1,7 +1,36 @@
 import { Button, Input } from "antd";
-import React from "react";
-
-function Login() {
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { setAuthenticationHeader } from "../../utils/Authenticate";
+import { connect } from "react-redux";
+function Login(props) {
+  const navigateTo = useNavigate();
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+  const onLogin = async () => {
+    await axios
+      .post("http://localhost:5000/login", {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        if (response.status) {
+          localStorage.setItem("access_token", response?.data?.token);
+          props.isLoggedIn();
+          navigateTo("/home");
+        }
+      })
+      .catch(function (error) {
+        Swal.fire({
+          title: "Error",
+          text: error?.response?.data?.message,
+          icon: "error",
+          confirmButtonText: "Alright!",
+        });
+      });
+  };
   return (
     <div className="bg-login-img bg-cover h-screen">
       <div className="flex flex-row justify-end align-middle items-center w-full h-screen px-80">
@@ -10,15 +39,34 @@ function Login() {
             <div className="text-3xl mb-4 font-semibold">Login</div>
             <div className="credentials card shadow-lg w-96 ">
               <div className="uName my-4">
-                <div className="text-xl w-full my-2 font-medium">User Name</div>
-                <Input placeholder="User Name" type="text" size="large" />
+                <div className="text-xl w-full my-2 font-medium">Email</div>
+                <Input
+                  placeholder="User Name"
+                  type="text"
+                  size="large"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
               </div>
               <div className="password my-4">
                 <div className="text-xl my-2 font-medium">Password</div>
-                <Input placeholder="Password" type="password" size="large" />
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  size="large"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                />
               </div>
               <div className="flex justify-around items-center flex-row">
-                <Button type="primary" className="text-black" size="large">
+                <Button
+                  type="primary"
+                  className="text-black"
+                  size="large"
+                  onClick={onLogin}
+                >
                   Login
                 </Button>
                 <Button type="dashed" size="large">
@@ -32,5 +80,9 @@ function Login() {
     </div>
   );
 }
-
-export default Login;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    isLoggedIn: () => dispatch({ type: "LOGGEDIN" }),
+  };
+};
+export default connect(null, mapDispatchToProps)(Login);
