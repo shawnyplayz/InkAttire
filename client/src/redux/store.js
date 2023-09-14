@@ -9,9 +9,10 @@ const authPersistConfig = {
   whitelist: ["universalReducer"],
 };
 const rootReducer = combineReducers({ universalReducer: reducer });
-const reduxPersist = persistReducer(authPersistConfig, rootReducer);
+// const reduxPersist = persistReducer(authPersistConfig, rootReducer);
 export const store = createStore(
-  reduxPersist,
+  rootReducer,
+  // reduxPersist,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 export const persistor = persistStore(store);
