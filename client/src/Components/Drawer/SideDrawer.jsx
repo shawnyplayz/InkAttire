@@ -1,6 +1,29 @@
 import React, { useState } from "react";
 import { Button, Drawer, Radio, Space } from "antd";
 import { FaArrowRight } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
+const menu = [
+  {
+    text: "Add Product",
+    link: "/createproduct",
+  },
+  {
+    text: "Update Product",
+    link: "/updateproduct",
+  },
+  {
+    text: "Delete Product",
+    link: "/deleteproduct",
+  },
+  {
+    text: "View Products",
+    link: "/viewproduct",
+  },
+  {
+    text: "View Users",
+    link: "/viewusers",
+  },
+];
 function SideDrawer() {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState("left");
@@ -18,9 +41,9 @@ function SideDrawer() {
       <button
         type="primary"
         onClick={showDrawer}
-        className="top-1/2 absolute rounded-lg text-6xl"
+        className="top-1/2 fixed rounded-lg text-6xl"
       >
-        <div className="rounded-full bg-orange-400 border-spacing-8">
+        <div className="rounded-full bg-orange-400 border-spacing-8 p-4">
           <FaArrowRight />
         </div>
       </button>
@@ -33,15 +56,29 @@ function SideDrawer() {
         extra={
           <Space>
             <Button onClick={onClose}>Close Menu</Button>
-            {/* <Button type="primary" onClick={onClose}>
-              OK
-            </Button> */}
           </Space>
         }
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <ul>
+          {/* <li>
+            <NavLink to="/createproduct">
+              <div className="card hover:bg-blue-300 hover:text-white text-xl font-medium">
+                Add a Product
+              </div>
+            </NavLink>
+          </li> */}
+          {menu.map((el) => {
+            return (
+              <li onClick={onClose}>
+                <NavLink to={el.link}>
+                  <div className="card hover:bg-blue-300 hover:text-white text-xl font-medium my-8">
+                    {el.text}
+                  </div>
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
       </Drawer>
     </>
   );

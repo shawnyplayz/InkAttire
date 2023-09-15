@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login from "../Components/Login/Login";
 import {
   BrowserRouter as Router,
@@ -12,36 +12,39 @@ import { connect } from "react-redux";
 import PrivateRoute from "./PrivateRoute";
 import SideDrawer from "../Components/Drawer/SideDrawer";
 import { matchRoutes, useLocation } from "react-router-dom";
-
-const routes = [{ path: "/login" }];
+import Navbar from "../Components/NavigationBar/Navbar";
+import CreateProduct from "../Components/createProd/CreateProduct";
 
 function Navigation(props) {
   const location = useLocation();
-  // const currentPath = useCurrentPath();
-  console.log(location);
+  const navigateTo = useNavigate();
+  useEffect(() => {
+    if (location.pathname === "/") {
+      window.localStorage.clear();
+      localStorage.removeItem("access_token");
+      navigateTo("/");
+      props.loggedOut();
+    }
+  }, [location.pathname]);
 
   return (
     <>
-      <div className={location.pathname !== "/" ? "h-full" : ""}>
+      <div>
         {location.pathname !== "/" ? (
           <div className="">
+            <Navbar />
             <SideDrawer />
           </div>
         ) : (
           ""
         )}
 
-        <div
-          className={
-            location.pathname !== "/"
-              ? "md:col-span-5 bg-blue-100 p-4 h-screen"
-              : ""
-          }
-        >
+        <div>
           <Routes>
             <Route path="/" element={<Login />} />
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
+              <Route path="/createproduct" element={<CreateProduct />} />
             </Route>
           </Routes>
         </div>
@@ -49,9 +52,14 @@ function Navigation(props) {
     </>
   );
 }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loggedOut: () => dispatch({ type: "LOGGEDOUT" }),
+  };
+};
 const mapStateToProps = (state) => {
   return {
     loggedIn: state?.universalReducer?.isLoggedIn,
   };
 };
-export default connect(mapStateToProps)(Navigation);
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
