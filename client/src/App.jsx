@@ -1,12 +1,22 @@
+import { connect } from "react-redux";
 import "./App.css";
 import Navigation from "./Navigation/Navigation";
 
-function App() {
+function App(props) {
+  const token = localStorage.getItem("access_token");
+  if (token) {
+    debugger;
+    props.isLoggedIn();
+  }
   return (
     <>
       <Navigation />
     </>
   );
 }
-
-export default App;
+export const mapDispatchToProps = (dispatch) => {
+  return {
+    isLoggedIn: () => dispatch({ type: "LOGGEDIN" }),
+  };
+};
+export default connect(null, mapDispatchToProps)(App);

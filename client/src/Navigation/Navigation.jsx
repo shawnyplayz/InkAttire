@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 import PrivateRoute from "./PrivateRoute";
 
 function Navigation(props) {
-  console.log("props.isLoggedIn", props.loggedIn);
-
   return (
     <Router>
       <Routes>

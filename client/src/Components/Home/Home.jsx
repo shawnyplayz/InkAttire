@@ -1,10 +1,12 @@
 import { Button } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import Swal from "sweetalert2";
-function Home() {
+import { useNavigate } from "react-router-dom";
+function Home(props) {
   const [results, setResults] = useState(null);
-
+  const navigateTo = useNavigate();
   const fetchRes = async () => {
     const _headers = {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -30,9 +32,20 @@ function Home() {
         });
       });
   };
+  const logOut = async () => {
+    window.localStorage.clear();
+    localStorage.removeItem("access_token");
+    navigateTo("/");
+    props.loggedOut();
+  };
   return (
     <div className="flex flex-col">
-      <h1>this is the home page</h1>
+      <h1>This is the home page</h1>
+      <div className="flex justify-center items-center">
+        <Button type="primary" onClick={logOut} className="text-black">
+          Log out
+        </Button>
+      </div>
       <div className="flex justify-center items-center">
         <Button type="primary" onClick={fetchRes} className="text-black">
           Press to fetch products
@@ -44,5 +57,9 @@ function Home() {
     </div>
   );
 }
-
-export default Home;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loggedOut: () => dispatch({ type: "LOGGEDOUT" }),
+  };
+};
+export default connect(null, mapDispatchToProps)(Home);
