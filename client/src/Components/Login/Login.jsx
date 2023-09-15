@@ -5,31 +5,52 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { setAuthenticationHeader } from "../../utils/Authenticate";
 import { connect } from "react-redux";
+import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
 function Login(props) {
   const navigateTo = useNavigate();
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const onLogin = async () => {
-    await axios
-      .post("http://localhost:5000/login", {
+    // await axios
+    //   .post("http://localhost:5000/login", {
+    //     email: email,
+    //     password: password,
+    //   })
+    //   .then((response) => {
+    //     if (response.status) {
+    //       localStorage.setItem("access_token", response?.data?.token);
+    //       props.isLoggedIn(response?.data.sendUserInfo[0]);
+    //       navigateTo("/home");
+    //     }
+    //   })
+    //   .catch(function (error) {
+    //     Swal.fire({
+    //       title: "Error",
+    //       text: error?.response?.data?.message,
+    //       icon: "error",
+    //       confirmButtonText: "Alright!",
+    //     });
+    //   });
+    try {
+      const answer = await postAxiosCall("/login", {
         email: email,
         password: password,
-      })
-      .then((response) => {
-        if (response.status) {
-          localStorage.setItem("access_token", response?.data?.token);
-          props.isLoggedIn(response?.data.sendUserInfo[0]);
-          navigateTo("/home");
-        }
-      })
-      .catch(function (error) {
-        Swal.fire({
-          title: "Error",
-          text: error?.response?.data?.message,
-          icon: "error",
-          confirmButtonText: "Alright!",
-        });
       });
+      if (answer.status) {
+        localStorage.setItem("access_token", answer?.data?.token);
+        props.isLoggedIn(answer?.data.sendUserInfo[0]);
+        navigateTo("/home");
+      } else {
+        console.log("error");
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: error,
+        icon: "error",
+        confirmButtonText: "Alright!",
+      });
+    }
   };
   return (
     <div className="bg-login-img bg-cover h-screen">

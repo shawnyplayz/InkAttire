@@ -17,8 +17,6 @@ import {
   TreeSelect,
   Upload,
 } from "antd";
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
 const normFile = (e) => {
   if (Array.isArray(e)) {
