@@ -5,7 +5,7 @@ export default function (ComposedComponent) {
   class Authenticate extends React.Component {
     constructor(props) {
       super(props);
-      debugger;
+
       if (!props.isAuthenticated) {
         this.props.history.push("/");
       }

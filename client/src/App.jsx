@@ -3,11 +3,10 @@ import "./App.css";
 import Navigation from "./Navigation/Navigation";
 
 function App(props) {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    debugger;
-    props.isLoggedIn();
-  }
+  // const token = localStorage.getItem("access_token");
+  // if (token) {
+  //   props.isLoggedIn();
+  // }
   return (
     <>
       <Navigation />

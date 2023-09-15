@@ -74,7 +74,16 @@ const login = async (req, res) => {
     //   secure: process.env.NODE_ENV == "production",
     // });
     //send it
-    res.status(200).json({ email, token });
+    const sendUserInfo = await users.find(
+      { email },
+      {
+        _id: 0, // Exclude the _id field
+        firstName: 1, // Include the firstname field
+        lastName: 1, // Include the lastname field
+      }
+    );
+    // const { firstName, lastName } = sendUserInfo;
+    res.status(200).json({ sendUserInfo, token });
   } catch (error) {
     res.status(400).json({ error: error });
   }

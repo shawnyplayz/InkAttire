@@ -18,7 +18,7 @@ function Login(props) {
       .then((response) => {
         if (response.status) {
           localStorage.setItem("access_token", response?.data?.token);
-          props.isLoggedIn();
+          props.isLoggedIn(response?.data.sendUserInfo[0]);
           navigateTo("/home");
         }
       })
@@ -82,7 +82,8 @@ function Login(props) {
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    isLoggedIn: () => dispatch({ type: "LOGGEDIN" }),
+    isLoggedIn: (sendUserInfo) =>
+      dispatch({ type: "LOGGEDIN", payload: sendUserInfo }),
   };
 };
 export default connect(null, mapDispatchToProps)(Login);

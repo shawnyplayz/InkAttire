@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 function Home(props) {
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState("");
   const navigateTo = useNavigate();
   const fetchRes = async () => {
     const _headers = {
@@ -40,7 +40,11 @@ function Home(props) {
   };
   return (
     <div className="flex flex-col">
-      <h1>This is the home page</h1>
+      <h1>
+        Hi {props.userDetails?.firstName}
+        {"  "}
+        {props.userDetails?.lastName}
+      </h1>
       <div className="flex justify-center items-center">
         <Button type="primary" onClick={logOut} className="text-black">
           Log out
@@ -62,4 +66,9 @@ const mapDispatchToProps = (dispatch) => {
     loggedOut: () => dispatch({ type: "LOGGEDOUT" }),
   };
 };
-export default connect(null, mapDispatchToProps)(Home);
+const mapStateToProps = (state) => {
+  return {
+    userDetails: state.universalReducer,
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
