@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-
-function Navbar() {
+import { connect } from "react-redux";
+function Navbar(props) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -37,7 +37,13 @@ function Navbar() {
           </div>
 
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-4">
+
+          <ul className="hidden md:flex space-x-8">
+            <div className="text-white">
+              <p>
+                {props.userDetails?.firstName} {props.userDetails?.lastName}
+              </p>
+            </div>
             <li>
               <NavLink to="/home" className="text-white">
                 Home
@@ -72,5 +78,9 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;
+const mapStateToProps = (state) => {
+  return {
+    userDetails: state.universalReducer,
+  };
+};
+export default connect(mapStateToProps)(Navbar);

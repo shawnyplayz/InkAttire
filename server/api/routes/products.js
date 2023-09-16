@@ -51,27 +51,31 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 //Creating One
-router.post("/", upload.single("productImage"), async (req, res, next) => {
-  console.log("File==>", req.file);
+router.post("/", async (req, res, next) => {
+  console.log("Request==>", req.body);
   const createProd = new products({
     sku: req.body.sku,
+    name: req.body.name,
     title: req.body.title,
-    description: req.body.description,
-    productImage: req.file.filename,
-    manufacture_details: req.body.manufacture_details,
-    shipping_details: req.body.shipping_details,
+    length: req.body.length,
+    width: req.body.width,
+    price: req.body.price,
+    discount_percent: req.body.discount_percent,
     quantity: req.body.quantity,
-    pricing: req.body.pricing,
+    size: req.body.size,
+    description: req.body.description,
+    // productImage: req.file.filename,
   });
   const querySku = await products.findOne({ sku: createProd.sku });
   console.log("querySku==>", querySku);
   if (createProd.sku === querySku?.sku) {
+    console.log("SKU name already EXISTS");
     res.status(500).json({ message: "SKU name already exists" });
     return;
   } else {
     try {
-      const newprod = await createProd.save();
-      res.status(201).json(newprod);
+      await createProd.save();
+      res.status(201).json({ message: "Successfully Added a Product" });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -82,21 +86,26 @@ router.put("/:id", async (req, res, next) => {
   try {
     if (req.body.sku != null) {
       const updateProd = new products({
-        _id: req.params.id,
+        // _id: req.params.id,
         sku: req.body.sku,
+        name: req.body.name,
         title: req.body.title,
-        description: req.body.description,
-        manufacture_details: req.body.manufacture_details,
-        shipping_details: req.body.shipping_details,
+        length: req.body.length,
+        width: req.body.width,
+        price: req.body.price,
+        discount_percent: req.body.discount_percent,
         quantity: req.body.quantity,
-        pricing: req.body.pricing,
+        size: req.body.size,
+        description: req.body.description,
       });
-      await products.updateOne({ _id: req.params.id }, updateProd).then(() => {
+      await products.updateOne({ sku: req.params.id }, updateProd).then(() => {
         return res.status(201).json({
           message: "Updated Successfully!",
         });
       });
       next();
+    } else {
+      res.status(500).send({ message: "No Product found" });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -113,3 +122,37 @@ router.delete("/:id", async (req, res, next) => {
   next();
 });
 module.exports = router;
+
+// const product = async (req, res) => {
+//   try {
+//     const createProd = new products({
+//       sku: req.body.sku,
+//       name: req.body.name,
+//       title: req.body.title,
+//       length: req.body.title,
+//       width: req.body.title,
+//       pricing: req.body.pricing,
+//       discount_percent: req.body.pricing,
+//       quantity: req.body.quantity,
+//       size: req.body.size,
+//       description: req.body.description,
+//       // productImage: req.file.filename,
+//     });
+//     const querySku = await products.findOne({ sku: createProd.sku });
+//     if (createProd.sku === querySku?.sku) {
+//       res.status(500).json({ message: "SKU name already exists" });
+//       return;
+//     } else {
+//       try {
+//         const newprod = await createProd.save();
+//         res.status(201).json(newprod);
+//       } catch (error) {
+//         res.status(400).json({ message: error.message });
+//       }
+//     }
+//   } catch (error) {
+//     console.log("error==>", error);
+//     res.status(400).json({ error: error });
+//   }
+// };
+// module.exports = { product };

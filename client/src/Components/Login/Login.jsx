@@ -36,9 +36,11 @@ function Login(props) {
         email: email,
         password: password,
       });
-      if (answer.status) {
-        localStorage.setItem("access_token", answer?.data?.token);
-        props.isLoggedIn(answer?.data.sendUserInfo[0]);
+
+      console.log(answer);
+      if (answer) {
+        localStorage.setItem("access_token", answer?.token);
+        props.isLoggedIn(answer?.sendUserInfo[0]);
         navigateTo("/home");
       } else {
         console.log("error");

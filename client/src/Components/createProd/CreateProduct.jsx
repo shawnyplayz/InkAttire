@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import PageWrapper from "../PageContainer/PageWrapper";
 import {
@@ -17,6 +17,9 @@ import {
   TreeSelect,
   Upload,
 } from "antd";
+import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
+import Swal from "sweetalert2";
+const { TextArea } = Input;
 
 const normFile = (e) => {
   if (Array.isArray(e)) {
@@ -25,12 +28,37 @@ const normFile = (e) => {
   return e?.fileList;
 };
 function CreateProduct() {
+  const [inputs, setInputs] = useState({});
+  const submit = async (e) => {
+    debugger;
+    e.preventDefault();
+    try {
+      const answer = await postAxiosCall("/product", inputs);
+      debugger;
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+        });
+        setInputs({});
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "error",
+        text: error,
+        icon: "error",
+        confirmButtonText: "Alright!",
+      });
+    }
+  };
   return (
     <>
       <PageWrapper title="Add Product">
         <div className="container mx-auto p-4 text-xl">
-          <form>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 ">
+          <form onSubmit={(e) => submit(e)}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               <div>
                 <label
                   htmlFor="name"
@@ -38,25 +66,34 @@ function CreateProduct() {
                 >
                   SKU
                 </label>
-                <input
+                <Input
+                  required
                   type="text"
-                  id="SKU"
-                  name="SKU"
+                  id="sku"
+                  name="sku"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.sku}
                 />
               </div>
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="text"
                   className="block text-sm font-medium text-gray-700"
                 >
                   Product Name
                 </label>
-                <input
+                <Input
                   type="text"
-                  id="productName"
-                  name="productName"
+                  required
+                  name="name"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.name}
                 />
               </div>
               <div>
@@ -66,11 +103,15 @@ function CreateProduct() {
                 >
                   Title
                 </label>
-                <input
+                <Input
                   type="text"
                   id="title"
                   name="title"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.title}
                 />
               </div>
               <div>
@@ -80,11 +121,19 @@ function CreateProduct() {
                 >
                   Length in inches
                 </label>
-                <input
+                <Input
                   type="number"
-                  id="price"
-                  name="price"
+                  id="length"
+                  name="length"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    debugger;
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs.length}
                 />
               </div>
               <div>
@@ -94,11 +143,18 @@ function CreateProduct() {
                 >
                   Width in inches
                 </label>
-                <input
+                <Input
                   type="number"
-                  id="price"
-                  name="price"
+                  id="width"
+                  name="width"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs.width}
                 />
               </div>
               <div>
@@ -108,11 +164,18 @@ function CreateProduct() {
                 >
                   Price in Rupees
                 </label>
-                <input
+                <Input
                   type="number"
                   id="price"
                   name="price"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs.price}
                 />
               </div>
               <div>
@@ -122,11 +185,40 @@ function CreateProduct() {
                 >
                   Discount in %
                 </label>
-                <input
+                <Input
                   type="number"
-                  id="price"
-                  name="price"
+                  id="discount_percent"
+                  name="discount_percent"
                   className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs.discount_percent}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Quantity
+                </label>
+                <Input
+                  required
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs.quantity}
                 />
               </div>
               <div>
@@ -140,10 +232,11 @@ function CreateProduct() {
                   showSearch
                   placeholder="Select Size"
                   style={{
-                    width: 200,
+                    width: "100%",
                     marginTop: "0.25rem",
                   }}
                   size="large"
+                  value={inputs?.size}
                   options={[
                     {
                       value: "xs",
@@ -162,7 +255,9 @@ function CreateProduct() {
                       label: "Large",
                     },
                   ]}
-                  //   onChange={()}
+                  onChange={(e) => {
+                    setInputs({ ...inputs, size: e });
+                  }}
                 ></Select>
               </div>
             </div>
@@ -173,12 +268,16 @@ function CreateProduct() {
               >
                 Description
               </label>
-              <textarea
+              <TextArea
                 required
                 type="text"
-                id="desc"
-                name="desc"
+                id="description"
+                name="description"
                 className="mt-1 p-2 block w-full border rounded-md"
+                onChange={(e) => {
+                  setInputs({ ...inputs, [e.target.name]: e.target.value });
+                }}
+                value={inputs?.description}
               />
             </div>
             <div className="my-5">
@@ -191,7 +290,7 @@ function CreateProduct() {
               <Upload
                 action="/upload.do"
                 listType="picture-card"
-                multiple="false"
+                multiple={false}
               >
                 <div>
                   <PlusOutlined />
@@ -235,7 +334,7 @@ function CreateProduct() {
           </Form.Item>
 
           <Form.Item label="InputNumber">
-            <InputNumber />
+            <Input />
           </Form.Item>
           <Form.Item label="TextArea">
             <TextArea rows={4} />

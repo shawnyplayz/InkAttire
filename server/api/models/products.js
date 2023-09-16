@@ -13,30 +13,39 @@ const productsSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  description: {
-    type: String,
-    require: true,
-  },
-  manufacture_details: {
-    type: Object,
-    required: true,
-  },
-  shipping_details: {
-    type: Object,
+  length: {
+    type: Number,
     required: true,
   },
   quantity: {
     type: Number,
     required: true,
   },
-  pricing: {
-    type: Object,
+  discount_percent: {
+    type: Number,
+    required: false,
+  },
+  price: {
+    type: Number,
     required: true,
   },
-  productImage: {
+  width: {
+    type: Number,
+    required: true,
+  },
+  size: {
     type: String,
     required: true,
   },
+  description: {
+    type: String,
+    require: true,
+  },
+
+  // productImage: {
+  //   type: String,
+  //   required: true,
+  // },
 });
 
 module.exports = mongoose.model("products", productsSchema);

@@ -31,7 +31,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use("/products", requireAuth, productRoutes);
+app.use("/product", requireAuth, productRoutes);
 app.post("/signup", userRoutes.signup);
 app.post("/login", userRoutes.login);
 app.get("/check-auth", requireAuth, userRoutes.checkAuth);

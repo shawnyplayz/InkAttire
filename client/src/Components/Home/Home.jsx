@@ -19,7 +19,7 @@ function Home(props) {
     await axios
       .get("http://localhost:5000/users", request)
       .then((result) => {
-        if (result.status) {
+        if (result?.status) {
           setResults(JSON.stringify(result.data));
         }
       })
@@ -40,11 +40,14 @@ function Home(props) {
   };
   return (
     <div className="flex flex-col">
-      <h1>
-        Hi {props.userDetails?.firstName}
-        {"  "}
-        {props.userDetails?.lastName}
-      </h1>
+      <div className="flex justify-center my-8">
+        <h1 className="text-2xl font-medium">
+          Hi, {props.userDetails?.firstName}
+          {"  "}
+          {props.userDetails?.lastName}
+        </h1>
+      </div>
+
       <div className="flex justify-center items-center">
         <Button type="primary" onClick={logOut} className="text-black">
           Log out
