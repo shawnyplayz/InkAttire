@@ -24,13 +24,18 @@ const productRoutes = require("./api/routes/products");
 const userRoutes = require("./api/routes/users");
 const requireAuth = require("./api/middleware/requireAuth");
 app.use(cors());
-app.use(express.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: false,
+    parameterLimit: 100000,
+    limit: "500mb",
+  })
+);
+app.use(express.json({ limit: "500mb" }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 app.use("/product", requireAuth, productRoutes);
 app.post("/signup", userRoutes.signup);
 app.post("/login", userRoutes.login);

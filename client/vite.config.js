@@ -8,5 +8,5 @@ export default defineConfig({
       URL: "http://localhost:5000",
     },
   },
-  plugins: [react()],
+  plugins: [react({})],
 });

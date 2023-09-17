@@ -19,17 +19,16 @@ export let postAxiosCall = async (endpoint, data) => {
 
     // Make the request using the provided body and endpoint
     const response = await instance.post(endpoint, data);
-    debugger;
     // Return the response
     return response.data;
   } catch (error) {
-    debugger;
     Swal.fire({
       title: "Error",
       text: error?.response?.data?.message,
       icon: "error",
       confirmButtonText: "Alright!",
     });
+    return;
   }
 };
 // let res = null;

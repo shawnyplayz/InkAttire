@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import PageWrapper from "../PageContainer/PageWrapper";
 import {
@@ -13,10 +13,13 @@ import {
   Radio,
   Select,
   Slider,
+  Spin,
   Switch,
   TreeSelect,
   Upload,
 } from "antd";
+import cloneDeep from "lodash/cloneDeep";
+
 import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
 import Swal from "sweetalert2";
 const { TextArea } = Input;
@@ -27,14 +30,52 @@ const normFile = (e) => {
   }
   return e?.fileList;
 };
+
 function CreateProduct() {
   const [inputs, setInputs] = useState({});
+  const [imageArray, setImageArray] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const convertAllToBase64 = async () => {
+    let B64Array = {};
+    let asd;
+    for (let i = 0; i < imageArray.length; i++) {
+      const base64String = await getBase64(imageArray[i]?.originFileObj);
+      B64Array[`image_${i}`] = base64String;
+    }
+    let dummyObj = { productImages: B64Array };
+    asd = Object.assign(inputs, dummyObj);
+    setInputs(asd);
+    if (
+      asd?.productImages?.length === 0 ||
+      !asd?.productImages ||
+      asd?.productImages == undefined
+    ) {
+      Swal.fire({
+        title: "error",
+        text: "Images Required",
+        icon: "error",
+        confirmButtonText: "Alright!",
+      });
+      return;
+    }
+  };
+
   const submit = async (e) => {
-    debugger;
-    e.preventDefault();
     try {
+      e.preventDefault();
+
+      // let filesToBeSent = await convertAllToBase64();
+
       const answer = await postAxiosCall("/product", inputs);
-      debugger;
+
       if (answer) {
         Swal.fire({
           title: "Success",
@@ -42,7 +83,8 @@ function CreateProduct() {
           icon: "success",
           confirmButtonText: "Great!",
         });
-        setInputs({});
+        setInputs();
+        window.location.reload();
       }
     } catch (error) {
       Swal.fire({
@@ -53,320 +95,300 @@ function CreateProduct() {
       });
     }
   };
+  const askModal = async (e) => {
+    e.preventDefault();
+
+    await convertAllToBase64();
+    Swal.fire({
+      title: "info",
+      text: "Are You Sure You want to Add This Data",
+      icon: "info",
+      confirmButtonText: "Confirm",
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        submit(e);
+      }
+    });
+  };
   return (
     <>
       <PageWrapper title="Add Product">
         <div className="container mx-auto p-4 text-xl">
-          <form onSubmit={(e) => submit(e)}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              <div>
+          <Spin spinning={loading}>
+            <form onSubmit={(e) => askModal(e)}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    SKU
+                  </label>
+                  <Input
+                    required
+                    type="text"
+                    id="sku"
+                    name="sku"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.sku}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Product Name
+                  </label>
+                  <Input
+                    type="text"
+                    required
+                    name="name"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.name}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Title
+                  </label>
+                  <Input
+                    type="text"
+                    id="title"
+                    name="title"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.title}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Length in inches
+                  </label>
+                  <Input
+                    type="number"
+                    id="Length"
+                    name="Length"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.Length}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Width in inches
+                  </label>
+                  <Input
+                    type="number"
+                    id="width"
+                    name="width"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.width}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Price in Rupees
+                  </label>
+                  <Input
+                    type="number"
+                    id="price"
+                    name="price"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.price}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Discount in %
+                  </label>
+                  <Input
+                    type="number"
+                    id="discount_percent"
+                    name="discount_percent"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.discount_percent}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Quantity
+                  </label>
+                  <Input
+                    required
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.quantity}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Select Size
+                  </label>
+                  <Select
+                    showSearch
+                    placeholder="Select Size"
+                    style={{
+                      width: "100%",
+                      marginTop: "0.25rem",
+                    }}
+                    size="large"
+                    value={inputs?.size}
+                    options={[
+                      {
+                        value: "xs",
+                        label: "Extra Small",
+                      },
+                      {
+                        value: "S",
+                        label: "Small",
+                      },
+                      {
+                        value: "M",
+                        label: "Medium",
+                      },
+                      {
+                        value: "L",
+                        label: "Large",
+                      },
+                    ]}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, size: e });
+                    }}
+                  ></Select>
+                </div>
+              </div>
+              <div className="my-5">
                 <label
                   htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  SKU
+                  Description
                 </label>
-                <Input
+                <TextArea
                   required
                   type="text"
-                  id="sku"
-                  name="sku"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({ [e.target.name]: e.target.value });
-                  }}
-                  value={inputs?.sku}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="text"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Product Name
-                </label>
-                <Input
-                  type="text"
-                  required
-                  name="name"
+                  id="description"
+                  name="description"
                   className="mt-1 p-2 block w-full border rounded-md"
                   onChange={(e) => {
                     setInputs({ ...inputs, [e.target.name]: e.target.value });
                   }}
-                  value={inputs?.name}
+                  value={inputs?.description}
                 />
               </div>
-              <div>
+              <div className="my-5">
                 <label
-                  htmlFor="text"
+                  htmlFor="name"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Title
+                  Upload Pictures
                 </label>
-                <Input
-                  type="text"
-                  id="title"
-                  name="title"
-                  className="mt-1 p-2 block w-full border rounded-md"
+                <Upload
+                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  // action="/upload.do"
+                  listType="picture-card"
+                  multiple={false}
+                  name="productImages"
+                  fileList={imageArray}
+                  maxCount={4}
                   onChange={(e) => {
-                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                    setImageArray(e.fileList);
                   }}
-                  value={inputs?.title}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
                 >
-                  Length in inches
-                </label>
-                <Input
-                  type="number"
-                  id="length"
-                  name="length"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    debugger;
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs.length}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Width in inches
-                </label>
-                <Input
-                  type="number"
-                  id="width"
-                  name="width"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs.width}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Price in Rupees
-                </label>
-                <Input
-                  type="number"
-                  id="price"
-                  name="price"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs.price}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Discount in %
-                </label>
-                <Input
-                  type="number"
-                  id="discount_percent"
-                  name="discount_percent"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs.discount_percent}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Quantity
-                </label>
-                <Input
-                  required
-                  type="number"
-                  id="quantity"
-                  name="quantity"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs.quantity}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Select Size
-                </label>
-                <Select
-                  showSearch
-                  placeholder="Select Size"
-                  style={{
-                    width: "100%",
-                    marginTop: "0.25rem",
-                  }}
-                  size="large"
-                  value={inputs?.size}
-                  options={[
-                    {
-                      value: "xs",
-                      label: "Extra Small",
-                    },
-                    {
-                      value: "S",
-                      label: "Small",
-                    },
-                    {
-                      value: "M",
-                      label: "Medium",
-                    },
-                    {
-                      value: "L",
-                      label: "Large",
-                    },
-                  ]}
-                  onChange={(e) => {
-                    setInputs({ ...inputs, size: e });
-                  }}
-                ></Select>
-              </div>
-            </div>
-            <div className="my-5">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description
-              </label>
-              <TextArea
-                required
-                type="text"
-                id="description"
-                name="description"
-                className="mt-1 p-2 block w-full border rounded-md"
-                onChange={(e) => {
-                  setInputs({ ...inputs, [e.target.name]: e.target.value });
-                }}
-                value={inputs?.description}
-              />
-            </div>
-            <div className="my-5">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Upload Pictures
-              </label>
-              <Upload
-                action="/upload.do"
-                listType="picture-card"
-                multiple={false}
-              >
-                <div>
-                  <PlusOutlined />
-                  <div
-                    style={{
-                      marginTop: 8,
-                    }}
-                  >
-                    Upload
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
                   </div>
-                </div>
-              </Upload>
-            </div>
-            <div className="acitonButtons w-full flex justify-center">
-              <button
-                className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
-                type="submit"
-              >
-                Save Data
-              </button>
-            </div>
-          </form>
-        </div>
-        {/* <Form
-          labelCol={{
-            span: 10,
-          }}
-          wrapperCol={{
-            span: 25,
-          }}
-          layout="horizontal"
-        >
-          <Form.Item label="SKU">
-            <Input type="text" size="large" />
-          </Form.Item>
-          <Form.Item label="Title">
-            <Input type="text" size="large" />
-          </Form.Item>
-          <Form.Item label="Description">
-            <Input type="text" size="large" />
-          </Form.Item>
-
-          <Form.Item label="InputNumber">
-            <Input />
-          </Form.Item>
-          <Form.Item label="TextArea">
-            <TextArea rows={4} />
-          </Form.Item>
-          <Form.Item label="Switch" valuePropName="checked">
-            <Switch />
-          </Form.Item>
-          <Form.Item
-            label="Upload"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <Upload action="/upload.do" listType="picture-card">
-              <div>
-                <PlusOutlined />
-                <div
-                  style={{
-                    marginTop: 8,
-                  }}
-                >
-                  Upload
-                </div>
+                </Upload>
               </div>
-            </Upload>
-          </Form.Item>
-          <Form.Item label="Button">
-            <Button>Button</Button>
-          </Form.Item>
-          <Form.Item label="Slider">
-            <Slider />
-          </Form.Item>
-        </Form> */}
+              <div className="acitonButtons w-full flex justify-center">
+                <button
+                  className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                  type="submit"
+                >
+                  Save Data
+                </button>
+              </div>
+            </form>
+          </Spin>
+        </div>
       </PageWrapper>
     </>
   );

@@ -4,6 +4,7 @@ const productsSchema = new mongoose.Schema({
   sku: {
     type: String,
     require: true,
+    unique: true,
   },
   name: {
     type: String,
@@ -42,10 +43,10 @@ const productsSchema = new mongoose.Schema({
     require: true,
   },
 
-  // productImage: {
-  //   type: String,
-  //   required: true,
-  // },
+  productImages: {
+    type: Object,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("products", productsSchema);

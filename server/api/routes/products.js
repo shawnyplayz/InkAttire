@@ -57,14 +57,14 @@ router.post("/", async (req, res, next) => {
     sku: req.body.sku,
     name: req.body.name,
     title: req.body.title,
-    length: req.body.length,
+    length: req.body.Length,
     width: req.body.width,
     price: req.body.price,
     discount_percent: req.body.discount_percent,
     quantity: req.body.quantity,
     size: req.body.size,
     description: req.body.description,
-    // productImage: req.file.filename,
+    productImages: req.body.productImages,
   });
   const querySku = await products.findOne({ sku: createProd.sku });
   console.log("querySku==>", querySku);
@@ -90,13 +90,14 @@ router.put("/:id", async (req, res, next) => {
         sku: req.body.sku,
         name: req.body.name,
         title: req.body.title,
-        length: req.body.length,
+        length: req.body.Length,
         width: req.body.width,
         price: req.body.price,
         discount_percent: req.body.discount_percent,
         quantity: req.body.quantity,
         size: req.body.size,
         description: req.body.description,
+        productImages: req.body.productImages,
       });
       await products.updateOne({ sku: req.params.id }, updateProd).then(() => {
         return res.status(201).json({
