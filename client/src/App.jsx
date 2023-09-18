@@ -1,21 +1,30 @@
 import { connect } from "react-redux";
 import "./App.css";
 import Navigation from "./Navigation/Navigation";
+import { Spin } from "antd";
 
 function App(props) {
-  // const token = localStorage.getItem("access_token");
-  // if (token) {
-  //   props.isLoggedIn();
-  // }
+  console.log("props", props);
   return (
     <>
-      <Navigation />
+      <Spin
+        spinning={props?.loading == undefined ? false : props?.loading}
+        size="large"
+        tip="Faster than windows update!"
+      >
+        <Navigation />
+      </Spin>
     </>
   );
 }
-export const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     isLoggedIn: () => dispatch({ type: "LOGGEDIN" }),
   };
 };
-export default connect(null, mapDispatchToProps)(App);
+const mapStateToProps = (state) => {
+  return {
+    loading: state.universalReducer?.loading,
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(App);

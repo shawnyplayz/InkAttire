@@ -3,6 +3,7 @@ const init = {
   firstName: null,
   lastName: null,
   isLoggedIn: false,
+  loading: false,
 };
 
 const reducer = (state = init, action) => {
@@ -20,6 +21,11 @@ const reducer = (state = init, action) => {
         ...state,
         email: null,
         isLoggedIn: false,
+      };
+    case "LOADING":
+      return {
+        ...state,
+        loading: action.payload,
       };
   }
 

@@ -4,33 +4,13 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { getAxiosCall } from "../../Axios/UniversalAxiosCalls";
 function Home(props) {
   const [results, setResults] = useState("");
   const navigateTo = useNavigate();
   const fetchRes = async () => {
-    const _headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "*/*",
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-    };
-    const request = {
-      headers: _headers,
-    };
-    await axios
-      .get("http://localhost:5000/users", request)
-      .then((result) => {
-        if (result?.status) {
-          setResults(JSON.stringify(result.data));
-        }
-      })
-      .catch((err) => {
-        Swal.fire({
-          title: "Error",
-          text: err,
-          icon: "error",
-          confirmButtonText: "Alright!",
-        });
-      });
+    const res = await getAxiosCall("/product");
+    setResults(res);
   };
   const logOut = async () => {
     window.localStorage.clear();
