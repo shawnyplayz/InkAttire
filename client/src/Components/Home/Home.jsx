@@ -10,7 +10,8 @@ function Home(props) {
   const navigateTo = useNavigate();
   const fetchRes = async () => {
     const res = await getAxiosCall("/product");
-    setResults(res);
+
+    setResults(res.data);
   };
   const logOut = async () => {
     window.localStorage.clear();

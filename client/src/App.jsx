@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 const mapStateToProps = (state) => {
   return {
-    loading: state.universalReducer?.loading,
+    loading: state.loadingReducer?.loading,
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(App);
