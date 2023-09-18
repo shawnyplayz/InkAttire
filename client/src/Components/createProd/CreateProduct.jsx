@@ -22,16 +22,28 @@ import cloneDeep from "lodash/cloneDeep";
 
 import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
 import Swal from "sweetalert2";
+import FormItem from "antd/es/form/FormItem";
 const { TextArea } = Input;
 
-const normFile = (e) => {
-  if (Array.isArray(e)) {
-    return e;
-  }
-  return e?.fileList;
-};
-
 function CreateProduct() {
+  const opt = [
+    {
+      value: "xs",
+      label: "Extra Small",
+    },
+    {
+      value: "S",
+      label: "Small",
+    },
+    {
+      value: "M",
+      label: "Medium",
+    },
+    {
+      value: "L",
+      label: "Large",
+    },
+  ];
   const [inputs, setInputs] = useState({});
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -68,12 +80,12 @@ function CreateProduct() {
     }
   };
 
-  const submit = async (e) => {
+  const submit = async () => {
     try {
-      e.preventDefault();
+      // e.preventDefault();
 
       // let filesToBeSent = await convertAllToBase64();
-
+      debugger;
       const answer = await postAxiosCall("/product", inputs);
 
       if (answer) {
@@ -95,9 +107,18 @@ function CreateProduct() {
       });
     }
   };
-  const askModal = async (e) => {
-    e.preventDefault();
-
+  const askModal = async () => {
+    // e.preventDefault();
+    debugger;
+    if (!inputs.hasOwnProperty("size")) {
+      Swal.fire({
+        title: "Error",
+        text: "Please select a size",
+        icon: "error",
+        confirmButtonText: "ok",
+      });
+      return;
+    }
     await convertAllToBase64();
     Swal.fire({
       title: "info",
@@ -107,7 +128,7 @@ function CreateProduct() {
       showCancelButton: true,
     }).then((result) => {
       if (result.isConfirmed) {
-        submit(e);
+        submit();
       }
     });
   };
@@ -116,7 +137,7 @@ function CreateProduct() {
       <PageWrapper title="Add Product">
         <div className="container mx-auto p-4 text-xl">
           <Spin spinning={loading}>
-            <form onSubmit={(e) => askModal(e)}>
+            <Form onFinish={askModal}>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 <div>
                   <label
@@ -169,6 +190,7 @@ function CreateProduct() {
                     Title
                   </label>
                   <Input
+                    required
                     type="text"
                     id="title"
                     name="title"
@@ -190,6 +212,7 @@ function CreateProduct() {
                     Length in inches
                   </label>
                   <Input
+                    required
                     type="number"
                     id="Length"
                     name="Length"
@@ -211,6 +234,7 @@ function CreateProduct() {
                     Width in inches
                   </label>
                   <Input
+                    required
                     type="number"
                     id="width"
                     name="width"
@@ -232,6 +256,7 @@ function CreateProduct() {
                     Price in Rupees
                   </label>
                   <Input
+                    required
                     type="number"
                     id="price"
                     name="price"
@@ -295,37 +320,59 @@ function CreateProduct() {
                   >
                     Select Size
                   </label>
-                  <Select
-                    showSearch
-                    placeholder="Select Size"
-                    style={{
-                      width: "100%",
-                      marginTop: "0.25rem",
-                    }}
-                    size="large"
+                  <select
+                    required
                     value={inputs?.size}
-                    options={[
-                      {
-                        value: "xs",
-                        label: "Extra Small",
-                      },
-                      {
-                        value: "S",
-                        label: "Small",
-                      },
-                      {
-                        value: "M",
-                        label: "Medium",
-                      },
-                      {
-                        value: "L",
-                        label: "Large",
-                      },
-                    ]}
                     onChange={(e) => {
-                      setInputs({ ...inputs, size: e });
+                      setInputs({ ...inputs, size: e.target.value });
                     }}
-                  ></Select>
+                    name="size"
+                    size="large"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    placeholder="Enter a Size"
+                  >
+                    {opt.map((el) => {
+                      return (
+                        <>
+                          <option value="" selected disabled hidden>
+                            Choose here
+                          </option>
+                          <option value={el.value}>{el.label}</option>
+                        </>
+                      );
+                    })}
+                  </select>
+                  {/* <Select
+                      showSearch
+                      placeholder="Select Size"
+                      style={{
+                        width: "100%",
+                        marginTop: "0.25rem",
+                      }}
+                      size="large"
+                      value={inputs?.size}
+                      options={[
+                        {
+                          value: "xs",
+                          label: "Extra Small",
+                        },
+                        {
+                          value: "S",
+                          label: "Small",
+                        },
+                        {
+                          value: "M",
+                          label: "Medium",
+                        },
+                        {
+                          value: "L",
+                          label: "Large",
+                        },
+                      ]}
+                      onChange={(e) => {
+                        setInputs({ ...inputs, size: e });
+                      }}
+                    /> */}
                 </div>
               </div>
               <div className="my-5">
@@ -386,7 +433,7 @@ function CreateProduct() {
                   Save Data
                 </button>
               </div>
-            </form>
+            </Form>
           </Spin>
         </div>
       </PageWrapper>
