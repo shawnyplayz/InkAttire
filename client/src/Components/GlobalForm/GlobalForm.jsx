@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import PageWrapper from "../PageContainer/PageWrapper";
 import {
@@ -18,14 +18,17 @@ import {
   TreeSelect,
   Upload,
 } from "antd";
-import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
+import {
+  deleteAxiosCall,
+  postAxiosCall,
+} from "../../Axios/UniversalAxiosCalls";
 import Swal from "sweetalert2";
-import FormItem from "antd/es/form/FormItem";
+import { useNavigate } from "react-router-dom";
 const { TextArea } = Input;
 function GlobalForm(props) {
   const opt = [
     {
-      value: "xs",
+      value: "XS",
       label: "Extra Small",
     },
     {
@@ -44,6 +47,13 @@ function GlobalForm(props) {
   const [inputs, setInputs] = useState({});
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
+  const NavigateTo = useNavigate();
+  useEffect(() => {
+    if (props?.record) {
+      setInputs(props.record);
+    }
+  }, []);
+
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -51,21 +61,23 @@ function GlobalForm(props) {
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
-
   const convertAllToBase64 = async () => {
-    let B64Array = {};
+    let B64Array = [];
     let asd;
     for (let i = 0; i < imageArray.length; i++) {
       const base64String = await getBase64(imageArray[i]?.originFileObj);
-      B64Array[`image_${i}`] = base64String;
+      B64Array.push(base64String);
     }
-    let dummyObj = { productImages: B64Array };
-    asd = Object.assign(inputs, dummyObj);
-    setInputs(asd);
+    let dummyObj = { productImages: [...B64Array] };
+    asd = Object.assign(inputs, { productImages: dummyObj?.productImages });
+    setInputs({ ...inputs, productImages: asd });
+  };
+
+  const submit = async () => {
     if (
-      asd?.productImages?.length === 0 ||
-      !asd?.productImages ||
-      asd?.productImages == undefined
+      inputs?.productImages?.length === 0 ||
+      !inputs?.productImages ||
+      inputs?.productImages == undefined
     ) {
       Swal.fire({
         title: "error",
@@ -75,57 +87,94 @@ function GlobalForm(props) {
       });
       return;
     }
-  };
-
-  const submit = async () => {
-    if (props.pageMode === "Add") {
-      try {
-        const answer = await postAxiosCall("/product", inputs);
-
-        if (answer) {
-          Swal.fire({
-            title: "Success",
-            text: answer?.message,
-            icon: "success",
-            confirmButtonText: "Great!",
-          });
-          setInputs();
-          window.location.reload();
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "error",
-          text: error,
-          icon: "error",
-          confirmButtonText: "Alright!",
-        });
-      }
-    }
-  };
-  const askModal = async () => {
-    // e.preventDefault();
-
-    if (!inputs.hasOwnProperty("size")) {
+    if (!inputs.hasOwnProperty("productImages")) {
       Swal.fire({
         title: "Error",
-        text: "Please select a size",
+        text: "Please Upload Images",
         icon: "error",
         confirmButtonText: "ok",
       });
       return;
     }
-    await convertAllToBase64();
-    Swal.fire({
-      title: "info",
-      text: "Are You Sure You want to Add This Data",
-      icon: "info",
-      confirmButtonText: "Confirm",
-      showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        submit();
+    try {
+      const answer = await postAxiosCall("/product", inputs);
+
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+        });
+        setInputs();
+        window.location.reload();
       }
-    });
+    } catch (error) {
+      Swal.fire({
+        title: "error",
+        text: error,
+        icon: "error",
+        confirmButtonText: "Alright!",
+      });
+    }
+  };
+  const remove = async () => {
+    const answer = await deleteAxiosCall("/product", inputs._id);
+
+    console.log("answer", answer);
+    if (answer) {
+      Swal.fire({
+        title: "Success",
+        text: answer?.message,
+        icon: "success",
+        confirmButtonText: "Great!",
+      });
+      setInputs();
+      NavigateTo("/deleteproduct");
+    }
+  };
+  const askModal = async () => {
+    // e.preventDefault();
+    switch (props.pageMode) {
+      case "Add":
+        if (!inputs.hasOwnProperty("size")) {
+          Swal.fire({
+            title: "Error",
+            text: "Please select a size",
+            icon: "error",
+            confirmButtonText: "ok",
+          });
+          return;
+        }
+        await convertAllToBase64();
+        Swal.fire({
+          title: "info",
+          text: "Are You Sure You want to Add This Data",
+          icon: "info",
+          confirmButtonText: "Confirm",
+          showCancelButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            submit();
+          }
+        });
+        break;
+      case "Delete":
+        Swal.fire({
+          title: "info",
+          text: "Are You Sure You want to Delete This Product",
+          icon: "info",
+          confirmButtonText: "Delete",
+          showCancelButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            remove();
+          }
+        });
+        break;
+      default:
+        break;
+    }
   };
   return (
     <PageWrapper title={`${props?.pageMode} Product`}>
@@ -337,37 +386,6 @@ function GlobalForm(props) {
                       );
                     })}
                   </select>
-                  {/* <Select
-                  showSearch
-                  placeholder="Select Size"
-                  style={{
-                    width: "100%",
-                    marginTop: "0.25rem",
-                  }}
-                  size="large"
-                  value={inputs?.size}
-                  options={[
-                    {
-                      value: "xs",
-                      label: "Extra Small",
-                    },
-                    {
-                      value: "S",
-                      label: "Small",
-                    },
-                    {
-                      value: "M",
-                      label: "Medium",
-                    },
-                    {
-                      value: "L",
-                      label: "Large",
-                    },
-                  ]}
-                  onChange={(e) => {
-                    setInputs({ ...inputs, size: e });
-                  }}
-                /> */}
                 </div>
               </div>
               <div className="my-5">
@@ -426,6 +444,273 @@ function GlobalForm(props) {
                   type="submit"
                 >
                   Save Data
+                </button>
+              </div>
+            </Form>
+          </Spin>
+        </div>
+      ) : props.pageMode === "Delete" ? (
+        <div className="container mx-auto p-4 text-xl">
+          <Spin spinning={loading}>
+            <Form onFinish={askModal}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    SKU
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="text"
+                    id="sku"
+                    name="sku"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.sku}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Product Name
+                  </label>
+                  <Input
+                    disabled={true}
+                    type="text"
+                    required
+                    name="name"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.name}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Title
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="text"
+                    id="title"
+                    name="title"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.title}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Length in inches
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="Length"
+                    name="Length"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.Length}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Width in inches
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="width"
+                    name="width"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.width}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Price in Rupees
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="price"
+                    name="price"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.price}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Discount in %
+                  </label>
+                  <Input
+                    disabled={true}
+                    type="number"
+                    id="discount_percent"
+                    name="discount_percent"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.discount_percent}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Quantity
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.quantity}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Select Size
+                  </label>
+                  <select
+                    disabled={true}
+                    required
+                    value={inputs?.size}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, size: e.target.value });
+                    }}
+                    name="size"
+                    size="large"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    placeholder="Enter a Size"
+                  >
+                    {opt.map((el) => {
+                      return (
+                        <>
+                          <option value="" selected disabled hidden>
+                            Choose here
+                          </option>
+                          <option value={el.value}>{el.label}</option>
+                        </>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
+                <TextArea
+                  disabled={true}
+                  required
+                  type="text"
+                  id="description"
+                  name="description"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.description}
+                />
+              </div>
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Pictures
+                </label>
+                <div className="w-full flex flex-row">
+                  {inputs.productImages?.map((el) => {
+                    return (
+                      <div className="card">
+                        <img src={el} alt="asd4e" />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="acitonButtons w-full flex justify-center">
+                <button
+                  className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                  type="submit"
+                >
+                  {props.pageMode} Data
                 </button>
               </div>
             </Form>

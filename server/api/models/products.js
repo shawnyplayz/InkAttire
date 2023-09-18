@@ -44,7 +44,7 @@ const productsSchema = new mongoose.Schema({
   },
 
   productImages: {
-    type: Object,
+    type: Array,
     required: true,
   },
 });

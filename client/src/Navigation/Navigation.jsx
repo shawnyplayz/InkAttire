@@ -14,6 +14,8 @@ import SideDrawer from "../Components/Drawer/SideDrawer";
 import { matchRoutes, useLocation } from "react-router-dom";
 import Navbar from "../Components/NavigationBar/Navbar";
 import CreateProduct from "../Components/createProd/CreateProduct";
+import DeleteProd from "../Components/deleteProd/DeleteProd";
+import DeleteInner from "../Components/deleteProd/DeleteInner";
 
 function Navigation(props) {
   const location = useLocation();
@@ -45,6 +47,8 @@ function Navigation(props) {
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
               <Route path="/createproduct" element={<CreateProduct />} />
+              <Route path="/deleteproduct" element={<DeleteProd />} />
+              <Route path="/deleteinner" element={<DeleteInner />} />
             </Route>
           </Routes>
         </div>

@@ -115,8 +115,13 @@ router.put("/:id", async (req, res, next) => {
 // Deleting One
 router.delete("/:id", async (req, res, next) => {
   try {
-    await products.deleteOne({ _id: req.params.id });
-    res.status(200).send({ message: "Deleted Successfully!" });
+    const getOne = await products.findOne({ _id: req.params.id });
+    if (!getOne) {
+      res.status(500).json({ message: "Product Dosen't Exist" });
+    } else {
+      await products.deleteOne({ _id: req.params.id });
+      res.status(200).send({ message: "Deleted Successfully!" });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
