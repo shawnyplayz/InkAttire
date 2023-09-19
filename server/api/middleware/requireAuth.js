@@ -24,14 +24,12 @@ const users = require("../models/users");
 // };
 const requireAuth = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
-  console.log("authHeader==>", authHeader);
 
   if (authHeader) {
     try {
       const token = authHeader.split(" ")[1];
       let decoded = jwt.verify(token, process.env.SECRET);
       if (decoded) {
-        console.log("decoded", decoded);
         // const email = decoded.email;
         const persistedUser = await users.findById(decoded.encode);
         if (persistedUser) {

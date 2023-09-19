@@ -57,7 +57,7 @@ router.post("/", async (req, res, next) => {
     sku: req.body.sku,
     name: req.body.name,
     title: req.body.title,
-    length: req.body.Length,
+    Length: req.body.Length,
     width: req.body.width,
     price: req.body.price,
     discount_percent: req.body.discount_percent,
@@ -85,21 +85,21 @@ router.post("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     if (req.body.sku != null) {
-      const updateProd = new products({
-        // _id: req.params.id,
-        sku: req.body.sku,
-        name: req.body.name,
-        title: req.body.title,
-        length: req.body.Length,
-        width: req.body.width,
-        price: req.body.price,
-        discount_percent: req.body.discount_percent,
-        quantity: req.body.quantity,
-        size: req.body.size,
-        description: req.body.description,
-        productImages: req.body.productImages,
-      });
-      await products.updateOne({ sku: req.params.id }, updateProd).then(() => {
+      // const updateProd = new products({
+      //   // _id: req.body.id,
+      //   sku: req.body.sku,
+      //   name: req.body.name,
+      //   title: req.body.title,
+      //   Length: req.body.Length,
+      //   width: req.body.width,
+      //   price: req.body.price,
+      //   discount_percent: req.body.discount_percent,
+      //   quantity: req.body.quantity,
+      //   size: req.body.size,
+      //   description: req.body.description,
+      //   productImages: req.body.productImages,
+      // });
+      await products.updateOne({ sku: req.params.id }, req.body).then(() => {
         return res.status(201).json({
           message: "Updated Successfully!",
         });

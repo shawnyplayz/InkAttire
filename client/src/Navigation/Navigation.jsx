@@ -17,6 +17,7 @@ import CreateProduct from "../Components/createProd/CreateProduct";
 import DeleteInner from "../Components/deleteProd/DeleteInner";
 import ProductTable from "../Components/ProductTable/ProductTable";
 import ViewInner from "../Components/viewProd/ViewInner";
+import UpdateInner from "../Components/updateProd/UpdateInner";
 
 function Navigation(props) {
   const location = useLocation();
@@ -58,6 +59,11 @@ function Navigation(props) {
                 element={<ProductTable pageMode="View" />}
               />
               <Route path="/viewinner" element={<ViewInner />} />
+              <Route
+                path="/updateproduct"
+                element={<ProductTable pageMode="Update" />}
+              />
+              <Route path="/updateinner" element={<UpdateInner />} />
             </Route>
           </Routes>
         </div>

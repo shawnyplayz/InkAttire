@@ -55,7 +55,7 @@ function ProductTable(props) {
     setResult(result.data);
   };
   return (
-    <PageWrapper title="Products">
+    <PageWrapper title={`${props.pageMode} Products`}>
       <Table
         columns={columns}
         dataSource={result}

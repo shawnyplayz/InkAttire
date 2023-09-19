@@ -21,6 +21,7 @@ import {
 import {
   deleteAxiosCall,
   postAxiosCall,
+  updateAxiosCall,
 } from "../../Axios/UniversalAxiosCalls";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +46,7 @@ function GlobalForm(props) {
     },
   ];
   const [inputs, setInputs] = useState({});
+  const [imageClone, setImageClone] = useState(props?.record.productImages);
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const NavigateTo = useNavigate();
@@ -53,7 +55,6 @@ function GlobalForm(props) {
       setInputs(props.record);
     }
   }, []);
-
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -62,15 +63,33 @@ function GlobalForm(props) {
       reader.onerror = (error) => reject(error);
     });
   const convertAllToBase64 = async () => {
-    let B64Array = [];
-    let asd;
-    for (let i = 0; i < imageArray.length; i++) {
-      const base64String = await getBase64(imageArray[i]?.originFileObj);
-      B64Array.push(base64String);
+    if (props.pageMode === "Add") {
+      if (imageArray.length != 0) {
+        let B64Array = [];
+        let asd;
+        for (let i = 0; i < imageArray.length; i++) {
+          const base64String = await getBase64(imageArray[i]?.originFileObj);
+          B64Array.push(base64String);
+        }
+        let dummyObj = { productImages: [...B64Array] };
+        asd = Object.assign(inputs, { productImages: dummyObj?.productImages });
+        setInputs({ ...inputs, productImages: asd });
+      }
+    } else {
+      if (imageArray.length != 0) {
+        let B64Array = [];
+        let asd;
+        for (let i = 0; i < imageArray.length; i++) {
+          const base64String = await getBase64(imageArray[i]?.originFileObj);
+          B64Array.push(base64String);
+        }
+        let dummyObj = [...inputs?.productImages];
+
+        dummyObj = [...dummyObj, ...B64Array];
+        asd = Object.assign(inputs, { productImages: dummyObj });
+        setInputs({ ...inputs, productImages: asd });
+      }
     }
-    let dummyObj = { productImages: [...B64Array] };
-    asd = Object.assign(inputs, { productImages: dummyObj?.productImages });
-    setInputs({ ...inputs, productImages: asd });
   };
 
   const submit = async () => {
@@ -133,6 +152,21 @@ function GlobalForm(props) {
       NavigateTo("/deleteproduct");
     }
   };
+  const update = async () => {
+    const answer = await updateAxiosCall("/product", inputs.sku, inputs);
+
+    console.log("answer", answer);
+    if (answer) {
+      Swal.fire({
+        title: "Success",
+        text: answer?.message,
+        icon: "success",
+        confirmButtonText: "Great!",
+      });
+      setInputs();
+      NavigateTo("/updateproduct");
+    }
+  };
   const askModal = async () => {
     // e.preventDefault();
     switch (props.pageMode) {
@@ -172,9 +206,42 @@ function GlobalForm(props) {
           }
         });
         break;
+      case "Update":
+        await convertAllToBase64();
+        Swal.fire({
+          title: "info",
+          text: "Are You Sure You want to Add This Data",
+          icon: "info",
+          confirmButtonText: "Confirm",
+          showCancelButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            update();
+          }
+        });
+        break;
       default:
         break;
     }
+  };
+  const deleteImage = async (imageIndex) => {
+    const dupli = inputs?.productImages;
+    dupli?.splice(imageIndex, 1);
+    console.log(dupli);
+    setInputs({ ...inputs, productImages: dupli });
+  };
+  const deleteModal = (index) => {
+    Swal.fire({
+      title: "info",
+      text: "Are You Sure You want to Delete This Picture",
+      icon: "info",
+      confirmButtonText: "Delete",
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteImage(index);
+      }
+    });
   };
   return (
     <PageWrapper title={`${props?.pageMode} Product`}>
@@ -971,6 +1038,323 @@ function GlobalForm(props) {
                     );
                   })}
                 </div>
+              </div>
+            </Form>
+          </Spin>
+        </div>
+      ) : props.pageMode === "Update" ? (
+        <div className="container mx-auto p-4 text-xl">
+          <Spin spinning={loading}>
+            <Form onFinish={askModal}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    SKU
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="text"
+                    id="sku"
+                    name="sku"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.sku}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Product Name
+                  </label>
+                  <Input
+                    disabled={false}
+                    type="text"
+                    required
+                    name="name"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.name}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Title
+                  </label>
+                  <Input
+                    disabled={false}
+                    required
+                    type="text"
+                    id="title"
+                    name="title"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.title}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Length in inches
+                  </label>
+                  <Input
+                    disabled={false}
+                    required
+                    type="number"
+                    id="Length"
+                    name="Length"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.Length}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Width in inches
+                  </label>
+                  <Input
+                    disabled={false}
+                    required
+                    type="number"
+                    id="width"
+                    name="width"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.width}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Price in Rupees
+                  </label>
+                  <Input
+                    disabled={false}
+                    required
+                    type="number"
+                    id="price"
+                    name="price"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.price}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Discount in %
+                  </label>
+                  <Input
+                    disabled={false}
+                    type="number"
+                    id="discount_percent"
+                    name="discount_percent"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.discount_percent}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Quantity
+                  </label>
+                  <Input
+                    disabled={false}
+                    required
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.quantity}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Select Size
+                  </label>
+                  <select
+                    disabled={false}
+                    required
+                    value={inputs?.size}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, size: e.target.value });
+                    }}
+                    name="size"
+                    size="large"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    placeholder="Enter a Size"
+                  >
+                    {opt.map((el) => {
+                      return (
+                        <>
+                          <option value="" selected disabled hidden>
+                            Choose here
+                          </option>
+                          <option value={el.value}>{el.label}</option>
+                        </>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
+                <TextArea
+                  disabled={false}
+                  required
+                  type="text"
+                  id="description"
+                  name="description"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.description}
+                />
+              </div>
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Upload Pictures
+                </label>
+                <Upload
+                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  // action="/upload.do"
+                  listType="picture-card"
+                  multiple={false}
+                  name="productImages"
+                  fileList={imageArray}
+                  maxCount={4}
+                  onChange={(e) => {
+                    setImageArray(e.fileList);
+                  }}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+              {imageClone?.productImages?.length != 0 ? (
+                <div className="my-5">
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Pictures
+                  </label>
+                  <div className="w-full flex flex-row">
+                    {imageClone?.map((el, index) => (
+                      <div className="card" key={index}>
+                        <div className="flex">
+                          <img
+                            src={el}
+                            alt="asd4e"
+                            className="object-contain"
+                          />
+                        </div>
+                        <div className="flex flex-row justify-center items-end">
+                          <button
+                            className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                            onClick={() => deleteModal(index)}
+                            type="button"
+                          >
+                            Delete Picture
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+
+              <div className="acitonButtons w-full flex justify-center">
+                <button
+                  className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                  type="submit"
+                >
+                  {props.pageMode} Data
+                </button>
               </div>
             </Form>
           </Spin>
