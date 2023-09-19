@@ -1,15 +1,48 @@
-import { Button } from "antd";
+import { Button, Table } from "antd";
 import axios from "axios";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { getAxiosCall } from "../../Axios/UniversalAxiosCalls";
+import PageWrapper from "../PageContainer/PageWrapper";
 function Home(props) {
+  const columns = [
+    {
+      title: "User Id",
+      dataIndex: "userId",
+      key: "userId",
+    },
+    {
+      title: "First Name",
+      dataIndex: "firstName",
+      key: "firstName",
+    },
+    {
+      title: "Last Name",
+      dataIndex: "lastName",
+      key: "lastName",
+    },
+    {
+      title: "Email Id",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+    },
+    {
+      title: "Role Id",
+      dataIndex: "roleId",
+      key: "roleId",
+    },
+  ];
   const [results, setResults] = useState("");
   const navigateTo = useNavigate();
   const fetchRes = async () => {
-    const res = await getAxiosCall("/product");
+    const res = await getAxiosCall("/users");
 
     setResults(res.data);
   };
@@ -36,12 +69,24 @@ function Home(props) {
       </div>
       <div className="flex justify-center items-center">
         <Button type="primary" onClick={fetchRes} className="text-black">
-          Press to fetch products
+          Click to Check Users
         </Button>
       </div>
-      <div className="">
-        <p>{JSON.stringify(results)}</p>
-      </div>
+      <PageWrapper>
+        <Table
+          columns={columns}
+          dataSource={results}
+          size="large"
+          style={{
+            width: "100rem",
+          }}
+
+          // scroll={{
+          //   x: 1500,
+          //   y: 1000,
+          // }}
+        />
+      </PageWrapper>
     </div>
   );
 }

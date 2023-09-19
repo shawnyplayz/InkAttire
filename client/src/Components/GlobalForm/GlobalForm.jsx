@@ -46,7 +46,7 @@ function GlobalForm(props) {
     },
   ];
   const [inputs, setInputs] = useState({});
-  const [imageClone, setImageClone] = useState(props?.record.productImages);
+  const [imageClone, setImageClone] = useState(props?.record?.productImages);
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const NavigateTo = useNavigate();

@@ -12,7 +12,7 @@ function Navbar(props) {
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           {/* Logo or Brand Name */}
-          <NavLink href="/" className="text-pink-200 text-2xl font-serif">
+          <NavLink href="/" className="text-pink-200 text-3xl font-serif ">
             Ink Attire{" "}
           </NavLink>
 
@@ -38,10 +38,10 @@ function Navbar(props) {
 
           {/* Desktop Menu */}
 
-          <ul className="hidden md:flex space-x-8">
+          <ul className="hidden md:flex space-x-8 text-xl">
             <div className="text-white">
-              <p>
-                {props.userDetails?.firstName} {props.userDetails?.lastName}
+              <p className="font-semibold">
+                Hi, {props.userDetails?.firstName} {props.userDetails?.lastName}
               </p>
             </div>
             <li>
@@ -60,7 +60,7 @@ function Navbar(props) {
 
         {/* Mobile Menu (Hidden by Default) */}
         <div className={`md:hidden ${isMobileMenuOpen ? "block" : "hidden"}`}>
-          <ul className="mt-2 space-y-2">
+          <ul className="mt-2 space-y-2 text-xl">
             <li>
               <a href="#" className="text-white">
                 Home
