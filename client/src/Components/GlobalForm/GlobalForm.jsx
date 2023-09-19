@@ -153,6 +153,19 @@ function GlobalForm(props) {
     }
   };
   const update = async () => {
+    if (
+      inputs?.productImages?.length === 0 ||
+      !inputs?.productImages ||
+      inputs?.productImages == undefined
+    ) {
+      Swal.fire({
+        title: "error",
+        text: "Images Required",
+        icon: "error",
+        confirmButtonText: "Alright!",
+      });
+      return;
+    }
     const answer = await updateAxiosCall("/product", inputs.sku, inputs);
 
     console.log("answer", answer);
