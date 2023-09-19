@@ -17,7 +17,7 @@ const menu = [
   },
   {
     text: "View Products",
-    link: "/viewproduct",
+    link: "/viewproducts",
   },
   {
     text: "View Users",
@@ -41,7 +41,7 @@ function SideDrawer() {
       <button
         type="primary"
         onClick={showDrawer}
-        className="top-1/2 fixed rounded-lg text-6xl"
+        className="top-1/2 fixed rounded-lg text-6xl z-10"
       >
         <div className="rounded-full bg-orange-400 border-spacing-8 p-4">
           <FaArrowRight />

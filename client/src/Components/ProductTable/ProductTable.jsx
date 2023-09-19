@@ -5,7 +5,7 @@ import PageWrapper from "../PageContainer/PageWrapper";
 import { getAxiosCall } from "../../Axios/UniversalAxiosCalls";
 import { useNavigate } from "react-router-dom";
 
-function DeleteProd() {
+function ProductTable(props) {
   const columns = [
     {
       title: "Sku",
@@ -65,8 +65,15 @@ function DeleteProd() {
         }}
         onRow={(record, rowIndex) => {
           return {
-            onClick: (e) => {
-              navigateTo("/deleteinner", { state: record });
+            onClick: () => {
+              navigateTo(
+                props.pageMode === "View"
+                  ? "/viewinner"
+                  : props.pageMode === "Delete"
+                  ? "/deleteinner"
+                  : "/updateinner",
+                { state: record }
+              );
             },
           };
         }}
@@ -79,4 +86,4 @@ function DeleteProd() {
   );
 }
 
-export default DeleteProd;
+export default ProductTable;

@@ -716,6 +716,265 @@ function GlobalForm(props) {
             </Form>
           </Spin>
         </div>
+      ) : props.pageMode === "View" ? (
+        <div className="container mx-auto p-4 text-xl">
+          <Spin spinning={loading}>
+            <Form onFinish={askModal}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    SKU
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="text"
+                    id="sku"
+                    name="sku"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.sku}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Product Name
+                  </label>
+                  <Input
+                    disabled={true}
+                    type="text"
+                    required
+                    name="name"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.name}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="text"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Title
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="text"
+                    id="title"
+                    name="title"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    value={inputs?.title}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Length in inches
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="Length"
+                    name="Length"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.Length}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Width in inches
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="width"
+                    name="width"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.width}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Price in Rupees
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="price"
+                    name="price"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.price}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Discount in %
+                  </label>
+                  <Input
+                    disabled={true}
+                    type="number"
+                    id="discount_percent"
+                    name="discount_percent"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.discount_percent}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Quantity
+                  </label>
+                  <Input
+                    disabled={true}
+                    required
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    onChange={(e) => {
+                      setInputs({
+                        ...inputs,
+                        [e.target.name]: Number(e.target.value),
+                      });
+                    }}
+                    value={inputs?.quantity}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="number"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Select Size
+                  </label>
+                  <select
+                    disabled={true}
+                    required
+                    value={inputs?.size}
+                    onChange={(e) => {
+                      setInputs({ ...inputs, size: e.target.value });
+                    }}
+                    name="size"
+                    size="large"
+                    className="mt-1 p-2 block w-full border rounded-md"
+                    placeholder="Enter a Size"
+                  >
+                    {opt.map((el) => {
+                      return (
+                        <>
+                          <option value="" selected disabled hidden>
+                            Choose here
+                          </option>
+                          <option value={el.value}>{el.label}</option>
+                        </>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
+                <TextArea
+                  disabled={true}
+                  required
+                  type="text"
+                  id="description"
+                  name="description"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({ ...inputs, [e.target.name]: e.target.value });
+                  }}
+                  value={inputs?.description}
+                />
+              </div>
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Pictures
+                </label>
+                <div className="w-full flex flex-row">
+                  {inputs.productImages?.map((el) => {
+                    return (
+                      <div className="card">
+                        <img src={el} alt="asd4e" />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </Form>
+          </Spin>
+        </div>
       ) : (
         ""
       )}
