@@ -181,7 +181,21 @@ function GlobalForm(props) {
     }
   };
   const askModal = async () => {
-    // e.preventDefault();
+    for (const key in inputs) {
+      if (Object.hasOwnProperty.call(inputs, key)) {
+        
+        if(typeof(inputs[key]) === "number" && inputs[key] === 0 && key !="discount_percent"){
+        // const el = inputs[key];
+        Swal.fire({
+          title: "Error",
+          text: `${key} can not be zero`,
+          icon: "error",
+          confirmButtonText: "OK",
+        })
+        return
+        }
+      }
+    }
     switch (props.pageMode) {
       case "Add":
         if (!inputs.hasOwnProperty("size")) {
@@ -279,10 +293,10 @@ function GlobalForm(props) {
                     onChange={(e) => {
                       setInputs({
                         ...inputs,
-                        [e.target.name]: e.target.value,
+                        [e.target.name]: (e.target.value).toUpperCase(),
                       });
                     }}
-                    value={inputs?.sku}
+                    value={(inputs?.sku)}
                   />
                 </div>
                 <div>
@@ -1380,3 +1394,4 @@ function GlobalForm(props) {
 }
 
 export default GlobalForm;
+
