@@ -18,6 +18,7 @@ import DeleteInner from "../Components/deleteProd/DeleteInner";
 import ProductTable from "../Components/ProductTable/ProductTable";
 import ViewInner from "../Components/viewProd/ViewInner";
 import UpdateInner from "../Components/updateProd/UpdateInner";
+import Robots from "../Components/Robots/Robots";
 
 function Navigation(props) {
   const location = useLocation();
@@ -34,7 +35,7 @@ function Navigation(props) {
   return (
     <>
       <div>
-        {location.pathname !== "/" ? (
+        {location.pathname !== "/" && props.loggedIn ? (
           <div className="">
             <Navbar />
             <SideDrawer />
@@ -65,6 +66,7 @@ function Navigation(props) {
               />
               <Route path="/updateinner" element={<UpdateInner />} />
             </Route>
+            <Route path="*" element={<Robots />} />
           </Routes>
         </div>
       </div>

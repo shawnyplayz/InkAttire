@@ -183,16 +183,20 @@ function GlobalForm(props) {
   const askModal = async () => {
     for (const key in inputs) {
       if (Object.hasOwnProperty.call(inputs, key)) {
-        
-        if(typeof(inputs[key]) === "number" && inputs[key] === 0 && key !="discount_percent"){
-        // const el = inputs[key];
-        Swal.fire({
-          title: "Error",
-          text: `${key} can not be zero`,
-          icon: "error",
-          confirmButtonText: "OK",
-        })
-        return
+        if (
+          typeof inputs[key] === "number" &&
+          inputs[key] === 0 &&
+          key != "discount_percent" &&
+          key != "__v"
+        ) {
+          // const el = inputs[key];
+          Swal.fire({
+            title: "Error",
+            text: `${key} can not be zero`,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          return;
         }
       }
     }
@@ -272,7 +276,364 @@ function GlobalForm(props) {
   };
   return (
     <PageWrapper title={`${props?.pageMode} Product`}>
-      {props.pageMode === "Add" ? (
+      <div className="container mx-auto p-4 text-xl">
+        <Spin spinning={loading}>
+          <Form onFinish={askModal}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  SKU
+                </label>
+                <Input
+                  disabled={props?.pageMode !== "Add" ? true : false}
+                  required
+                  type="text"
+                  id="sku"
+                  name="sku"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  value={inputs?.sku}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Product Name
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  type="text"
+                  required
+                  name="name"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  value={inputs?.name}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="text"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Title
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  type="text"
+                  id="title"
+                  name="title"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  value={inputs?.title}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Length in cms
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  type="number"
+                  id="Length"
+                  name="Length"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.Length}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Width in cms
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  type="number"
+                  id="width"
+                  name="width"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.width}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Price per Unit in Rupees
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  type="number"
+                  id="price"
+                  name="price"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.price}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Discount in %
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  type="number"
+                  id="discount_percent"
+                  name="discount_percent"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.discount_percent}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Quantity
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.quantity}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Select Size
+                </label>
+                <select
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  value={inputs?.size}
+                  onChange={(e) => {
+                    setInputs({ ...inputs, size: e.target.value });
+                  }}
+                  name="size"
+                  size="large"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  placeholder="Enter a Size"
+                >
+                  {opt.map((el) => {
+                    return (
+                      <>
+                        <option value="" selected disabled hidden>
+                          Choose here
+                        </option>
+                        <option value={el.value}>{el.label}</option>
+                      </>
+                    );
+                  })}
+                </select>
+              </div>
+            </div>
+            <div className="my-5">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <TextArea
+                disabled={
+                  props?.pageMode === "Delete" || props?.pageMode === "View"
+                    ? true
+                    : false
+                }
+                required
+                type="text"
+                id="description"
+                name="description"
+                className="mt-1 p-2 block w-full border rounded-md"
+                onChange={(e) => {
+                  setInputs({ ...inputs, [e.target.name]: e.target.value });
+                }}
+                value={inputs?.description}
+              />
+            </div>
+            {/* Upload Pictures */}
+            {props.pageMode === "Add" || props.pageMode === "Update" ? (
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Upload Pictures
+                </label>
+                <Upload
+                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  // action="/upload.do"
+                  listType="picture-card"
+                  multiple={false}
+                  name="productImages"
+                  fileList={imageArray}
+                  maxCount={4}
+                  onChange={(e) => {
+                    setImageArray(e.fileList);
+                  }}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div
+                      style={{
+                        marginTop: 8,
+                      }}
+                    >
+                      Upload
+                    </div>
+                  </div>
+                </Upload>
+              </div>
+            ) : (
+              ""
+            )}
+
+            {/* Pictures */}
+            {props?.pageMode !== "Add" ? (
+              <div className="my-5">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Pictures
+                </label>
+                <div className="w-full flex flex-row">
+                  {imageClone?.map((el, index) => (
+                    <div className="card" key={index}>
+                      <div className="flex">
+                        <img src={el} alt="asd4e" className="object-contain" />
+                      </div>
+                      <div className="flex flex-row justify-center items-end">
+                        <button
+                          className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                          onClick={() => deleteModal(index)}
+                          type="button"
+                        >
+                          Delete Picture
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+            {props.pageMode === "View" ? (
+              ""
+            ) : (
+              <div className="acitonButtons w-full flex justify-center">
+                <button
+                  className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                  type="submit"
+                >
+                  {props.pageMode} Data
+                </button>
+              </div>
+            )}
+          </Form>
+        </Spin>
+      </div>
+      {/* {props.pageMode === "Add" ? (
         <div className="container mx-auto p-4 text-xl">
           <Spin spinning={loading}>
             <Form onFinish={askModal}>
@@ -1388,10 +1749,9 @@ function GlobalForm(props) {
         </div>
       ) : (
         ""
-      )}
+      )} */}
     </PageWrapper>
   );
 }
 
 export default GlobalForm;
-
