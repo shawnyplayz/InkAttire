@@ -13,7 +13,7 @@ function Navbar(props) {
         <div className="flex justify-between items-center">
           {/* Logo or Brand Name */}
           <NavLink href="/" className="text-pink-200 text-3xl font-serif ">
-            Ink Attire{" "}
+            Inklothes{" "}
           </NavLink>
 
           {/* Mobile Menu Button (Hamburger) */}
