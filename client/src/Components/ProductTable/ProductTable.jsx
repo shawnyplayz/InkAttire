@@ -51,7 +51,7 @@ function ProductTable(props) {
     answer();
   }, []);
   const answer = async () => {
-    const result = await getAxiosCall("/product");
+    const result = await getAxiosCall("/products");
     setResult(result.data);
   };
   return (

@@ -60,6 +60,7 @@ router.post("/", async (req, res, next) => {
     Length: req.body.Length,
     width: req.body.width,
     price: req.body.price,
+    totalPrice: req.body.totalPrice,
     discount_percent: req.body.discount_percent,
     quantity: req.body.quantity,
     size: req.body.size,
@@ -128,37 +129,3 @@ router.delete("/:id", async (req, res, next) => {
   next();
 });
 module.exports = router;
-
-// const product = async (req, res) => {
-//   try {
-//     const createProd = new products({
-//       sku: req.body.sku,
-//       name: req.body.name,
-//       title: req.body.title,
-//       length: req.body.title,
-//       width: req.body.title,
-//       pricing: req.body.pricing,
-//       discount_percent: req.body.pricing,
-//       quantity: req.body.quantity,
-//       size: req.body.size,
-//       description: req.body.description,
-//       // productImage: req.file.filename,
-//     });
-//     const querySku = await products.findOne({ sku: createProd.sku });
-//     if (createProd.sku === querySku?.sku) {
-//       res.status(500).json({ message: "SKU name already exists" });
-//       return;
-//     } else {
-//       try {
-//         const newprod = await createProd.save();
-//         res.status(201).json(newprod);
-//       } catch (error) {
-//         res.status(400).json({ message: error.message });
-//       }
-//     }
-//   } catch (error) {
-//     console.log("error==>", error);
-//     res.status(400).json({ error: error });
-//   }
-// };
-// module.exports = { product };

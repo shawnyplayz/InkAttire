@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import PageWrapper from "../PageContainer/PageWrapper";
 import {
@@ -49,12 +49,23 @@ function GlobalForm(props) {
   const [imageClone, setImageClone] = useState(props?.record?.productImages);
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
+  const priceRef = useRef();
+  const quantityRef = useRef();
   const NavigateTo = useNavigate();
   useEffect(() => {
     if (props?.record) {
       setInputs(props.record);
     }
   }, []);
+  useEffect(() => {
+    if (
+      Number(priceRef.current.input.value) === inputs?.price ||
+      Number(quantityRef.current.input.value) === inputs?.quantity
+    ) {
+      setInputs({ ...inputs, totalPrice: inputs?.price * inputs?.quantity });
+    }
+  }, [inputs?.price, inputs?.quantity]);
+
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -116,7 +127,7 @@ function GlobalForm(props) {
       return;
     }
     try {
-      const answer = await postAxiosCall("/product", inputs);
+      const answer = await postAxiosCall("/products", inputs);
 
       if (answer) {
         Swal.fire({
@@ -138,7 +149,7 @@ function GlobalForm(props) {
     }
   };
   const remove = async () => {
-    const answer = await deleteAxiosCall("/product", inputs._id);
+    const answer = await deleteAxiosCall("/products", inputs._id);
 
     console.log("answer", answer);
     if (answer) {
@@ -166,7 +177,7 @@ function GlobalForm(props) {
       });
       return;
     }
-    const answer = await updateAxiosCall("/product", inputs.sku, inputs);
+    const answer = await updateAxiosCall("/products", inputs.sku, inputs);
 
     console.log("answer", answer);
     if (answer) {
@@ -297,7 +308,7 @@ function GlobalForm(props) {
                   onChange={(e) => {
                     setInputs({
                       ...inputs,
-                      [e.target.name]: e.target.value,
+                      [e.target.name]: e.target.value.toUpperCase(),
                     });
                   }}
                   value={inputs?.sku}
@@ -424,6 +435,7 @@ function GlobalForm(props) {
                       : false
                   }
                   required
+                  ref={priceRef}
                   type="number"
                   id="price"
                   name="price"
@@ -435,6 +447,23 @@ function GlobalForm(props) {
                     });
                   }}
                   value={inputs?.price}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Total Price
+                </label>
+                <Input
+                  disabled={true}
+                  required
+                  type="number"
+                  id="totalPrice"
+                  name="totalPrice"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  value={inputs?.totalPrice}
                 />
               </div>
               <div>
@@ -477,6 +506,7 @@ function GlobalForm(props) {
                       : false
                   }
                   required
+                  ref={quantityRef}
                   type="number"
                   id="quantity"
                   name="quantity"
@@ -602,15 +632,20 @@ function GlobalForm(props) {
                       <div className="flex">
                         <img src={el} alt="asd4e" className="object-contain" />
                       </div>
-                      <div className="flex flex-row justify-center items-end">
-                        <button
-                          className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
-                          onClick={() => deleteModal(index)}
-                          type="button"
-                        >
-                          Delete Picture
-                        </button>
-                      </div>
+                      {props.pageMode !== "View" &&
+                      props.pageMode !== "Delete" ? (
+                        <div className="flex flex-row justify-center items-end">
+                          <button
+                            className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                            onClick={() => deleteModal(index)}
+                            type="button"
+                          >
+                            Delete Picture
+                          </button>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
                   ))}
                 </div>

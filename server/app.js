@@ -36,7 +36,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
-app.use("/product", requireAuth, productRoutes);
+app.use("/products", requireAuth, productRoutes);
 app.post("/signup", userRoutes.signup);
 app.post("/login", userRoutes.login);
 app.get("/check-auth", requireAuth, userRoutes.checkAuth);
