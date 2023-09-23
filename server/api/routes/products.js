@@ -62,6 +62,7 @@ router.post("/", async (req, res, next) => {
     price: req.body.price,
     totalPrice: req.body.totalPrice,
     discount_percent: req.body.discount_percent,
+    savings: req.body.savings,
     quantity: req.body.quantity,
     size: req.body.size,
     description: req.body.description,

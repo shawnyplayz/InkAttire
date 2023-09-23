@@ -51,6 +51,7 @@ function GlobalForm(props) {
   const [loading, setLoading] = useState(false);
   const priceRef = useRef();
   const quantityRef = useRef();
+  const discount_percentRef = useRef();
   const NavigateTo = useNavigate();
   useEffect(() => {
     if (props?.record) {
@@ -60,11 +61,24 @@ function GlobalForm(props) {
   useEffect(() => {
     if (
       Number(priceRef.current.input.value) === inputs?.price ||
-      Number(quantityRef.current.input.value) === inputs?.quantity
+      Number(quantityRef.current.input.value) === inputs?.quantity ||
+      Number(discount_percentRef.current.input.value) ===
+        inputs?.discount_percent
     ) {
-      setInputs({ ...inputs, totalPrice: inputs?.price * inputs?.quantity });
+      let _totalPrice = inputs.price;
+      let savings;
+      if (inputs.discount_percent) {
+        savings = (inputs.price * inputs.discount_percent) / 100;
+        _totalPrice = _totalPrice - savings;
+      }
+
+      setInputs({
+        ...inputs,
+        savings: savings,
+        totalPrice: _totalPrice,
+      });
     }
-  }, [inputs?.price, inputs?.quantity]);
+  }, [inputs?.price, inputs?.quantity, inputs?.discount_percent]);
 
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -454,7 +468,63 @@ function GlobalForm(props) {
                   htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Total Price
+                  Quantity
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  // defaultValue={Number(1)}
+                  required
+                  ref={quantityRef}
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.quantity}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Discount in % (per Unit)
+                </label>
+                <Input
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  type="number"
+                  id="discount_percent"
+                  name="discount_percent"
+                  ref={discount_percentRef}
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  onChange={(e) => {
+                    setInputs({
+                      ...inputs,
+                      [e.target.name]: Number(e.target.value),
+                    });
+                  }}
+                  value={inputs?.discount_percent}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Total Price per Unit
                 </label>
                 <Input
                   disabled={true}
@@ -471,53 +541,16 @@ function GlobalForm(props) {
                   htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Discount in %
+                  Savings per Unit
                 </label>
                 <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  type="number"
-                  id="discount_percent"
-                  name="discount_percent"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs?.discount_percent}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Quantity
-                </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
+                  disabled={true}
                   required
-                  ref={quantityRef}
                   type="number"
-                  id="quantity"
-                  name="quantity"
+                  id="savings"
+                  name="savings"
                   className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs?.quantity}
+                  value={inputs?.savings}
                 />
               </div>
               <div>

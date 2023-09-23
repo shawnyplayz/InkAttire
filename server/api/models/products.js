@@ -26,6 +26,7 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
+
   price: {
     type: Number,
     required: true,
@@ -33,6 +34,10 @@ const productsSchema = new mongoose.Schema({
   totalPrice: {
     type: Number,
     required: true,
+  },
+  savings: {
+    type: Number,
+    required: false,
   },
   width: {
     type: Number,
@@ -46,7 +51,6 @@ const productsSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-
   productImages: {
     type: Array,
     required: true,
