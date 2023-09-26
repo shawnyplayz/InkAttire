@@ -19,6 +19,7 @@ import ProductTable from "../Components/ProductTable/ProductTable";
 import ViewInner from "../Components/viewProd/ViewInner";
 import UpdateInner from "../Components/updateProd/UpdateInner";
 import Robots from "../Components/Robots/Robots";
+import CatalogueManagement from "../Components/catalogueManagement/CatalogueManagement";
 
 function Navigation(props) {
   const location = useLocation();
@@ -50,6 +51,10 @@ function Navigation(props) {
             <Route element={<PrivateRoute />}>
               <Route path="/home" element={<Home />} />
               <Route path="/createproduct" element={<CreateProduct />} />
+              <Route
+                path="/cataloguemanagement"
+                element={<CatalogueManagement />}
+              />
               <Route
                 path="/deleteproduct"
                 element={<ProductTable pageMode="Delete" />}

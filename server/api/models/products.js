@@ -51,6 +51,18 @@ const productsSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
+  clothingType: {
+    type: String,
+    require: true,
+  },
+  genre: {
+    type: String,
+    require: true,
+  },
+  bodyType: {
+    type: String,
+    require: true,
+  },
   productImages: {
     type: Array,
     required: true,

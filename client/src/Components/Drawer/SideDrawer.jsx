@@ -8,6 +8,10 @@ const menu = [
     link: "/createproduct",
   },
   {
+    text: "Catalogue Management",
+    link: "/cataloguemanagement",
+  },
+  {
     text: "Update Product",
     link: "/updateproduct",
   },

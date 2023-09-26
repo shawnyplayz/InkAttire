@@ -22,6 +22,7 @@ db.once("open", () => {
 
 const productRoutes = require("./api/routes/products");
 const userRoutes = require("./api/routes/users");
+const catalogueRoutes = require("./api/routes/catalogue");
 const requireAuth = require("./api/middleware/requireAuth");
 app.use(cors());
 app.use(
@@ -37,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 app.use("/products", requireAuth, productRoutes);
+app.use("/catalogue", requireAuth, catalogueRoutes);
 app.post("/signup", userRoutes.signup);
 app.post("/login", userRoutes.login);
 app.get("/check-auth", requireAuth, userRoutes.checkAuth);
