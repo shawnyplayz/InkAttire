@@ -4,7 +4,27 @@ const catalogue = require("../models/catalogue");
 
 router.get("/", async (req, res) => {
   try {
-    const getCata = await catalogue.find({});
+    let getCata = await catalogue.find({});
+    if (getCata) {
+      const clothingType = getCata?.filter((el) => {
+        if (el.clothingType != undefined || !el) {
+          return {
+            label: el.clothingType,
+            value: el.clothingType,
+          };
+        }
+      });
+      const genre = getCata?.filter((el) => {
+        if (el.genre !== undefined || !el) {
+          return {
+            label: el.genre,
+            value: el.genre,
+          };
+        }
+      });
+
+      getCata = { clothingType, genre };
+    }
     res.status(200).json(getCata);
   } catch (error) {
     res.status(500).json({ message: error });
@@ -13,20 +33,19 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const createCata = new catalogue({
-    clothingType: req.body?.clothingType?.toLowerCase(),
-    genre: req.body?.genre?.toLowerCase(),
+    clothingType: req.body?.clothingType,
+    genre: req.body?.genre,
   });
   console.log("createCata", createCata);
-  debugger;
+
   if (!createCata?.clothingType && !createCata?.genre) {
     res.status(500).json({ message: "Fields cannot be empty" });
   } else if (createCata.clothingType) {
     const clothingType = await catalogue.findOne({
       clothingType: createCata.clothingType,
     });
-    debugger;
+
     if (clothingType) {
-      debugger;
       res.status(500).json({ message: "This Clothing Type already exists" });
     } else {
       try {
@@ -34,12 +53,10 @@ router.post("/", async (req, res) => {
         await createCata.save();
         res.status(201).json({ message: "Successfully Added a Clothing" });
       } catch (error) {
-        debugger;
         res.status(500).json({ message: error.message });
       }
     }
   } else if (createCata.genre) {
-    debugger;
     const genre = await catalogue.findOne({ genre: createCata.genre });
     if (genre) {
       res.status(500).json({ message: "This Genre already exists" });
@@ -48,7 +65,6 @@ router.post("/", async (req, res) => {
         await createCata.save();
         res.status(201).json({ message: "Successfully Added a Genre" });
       } catch (error) {
-        debugger;
         res.status(500).json({ message: error.message });
       }
     }

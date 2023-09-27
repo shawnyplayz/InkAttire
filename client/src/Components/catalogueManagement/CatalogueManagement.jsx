@@ -1,34 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageWrapper from "../PageContainer/PageWrapper";
 import { Form, Input } from "antd";
-import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
+import { getAxiosCall, postAxiosCall } from "../../Axios/UniversalAxiosCalls";
 import Swal from "sweetalert2";
-
+import Creatable from "react-select/creatable";
 function CatalogueManagement() {
   //   const [bodyStyle, setBodyStyle] = useState("");
   //   const [genre, setGenre] = useState("");
-  const [inputs, setInputs] = useState("");
-  const savestuff = async () => {
+  const [inputs, setInputs] = useState({});
+  const [clothingOptions, setClothingOptions] = useState(null);
+  const [genreOptions, setGenreOptions] = useState(null);
+  useEffect(() => {
+    callCatalogue();
+  }, []);
+
+  const callCatalogue = async () => {
+    const getOptions = await getAxiosCall("/catalogue");
+    let clothingOptions = getOptions?.data?.clothingType;
+    let genreOptions = getOptions?.data?.genre;
+    if (clothingOptions) {
+      const collectClothing = clothingOptions?.map((el) => ({
+        label: el.clothingType,
+        value: el.clothingType,
+      }));
+      const collectGenre = genreOptions?.map((el) => ({
+        label: el.genre,
+        value: el.genre,
+      }));
+      setClothingOptions(collectClothing);
+      setGenreOptions(collectGenre);
+    }
+  };
+  const saveClothing = async () => {
     const result = await postAxiosCall("/catalogue", {
       clothingType: inputs.clothingType,
-      genre: inputs.genre,
     });
     if (result) {
-      debugger;
       Swal.fire({
         title: "Success",
         text: result?.message,
         icon: "success",
         confirmButtonText: "Great!",
+      }).then(() => {
+        setInputs({ ...inputs, clothingType: null });
+        callCatalogue();
       });
-      setInputs();
+    }
+  };
+  const saveGenre = async () => {
+    const result = await postAxiosCall("/catalogue", {
+      genre: inputs.genre,
+    });
+    if (result) {
+      Swal.fire({
+        title: "Success",
+        text: result?.message,
+        icon: "success",
+        confirmButtonText: "Great!",
+      }).then(() => {
+        setInputs({ ...inputs, genre: null });
+        callCatalogue();
+      });
     }
   };
   return (
     <div>
       <PageWrapper title="Catalogue Management">
-        <Form onFinish={savestuff}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <Form
+          // onFinish={savestuff}
+          style={{ width: "50%" }}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 htmlFor="name"
@@ -36,19 +78,42 @@ function CatalogueManagement() {
               >
                 Type of Clothing
               </label>
-              <Input
-                type="text"
-                id="clothingType"
-                name="clothingType"
-                className="mt-1 p-2 block w-full border rounded-md"
+              <Creatable
+                required
+                isClearable
+                isMulti={false}
                 onChange={(e) => {
-                  setInputs({
-                    ...inputs,
-                    [e.target.name]: e.target.value,
-                  });
+                  setInputs({ ...inputs, clothingType: e.value }, () =>
+                    console.log("inputs==>", inputs)
+                  );
                 }}
-                value={inputs?.clothingType}
+                options={clothingOptions}
+                isSearchable
+                styles={{ width: "100%" }}
+                value={{
+                  label: inputs?.clothingType,
+                  value: inputs?.clothingType,
+                }}
+                isOptionDisabled={(option) => {
+                  let asd;
+                  clothingOptions.forEach((element) => {
+                    if (element.value === option.value)
+                      return (asd = element.value);
+                  });
+                  if (option.value == asd) {
+                    return true;
+                  }
+                }}
               />
+            </div>
+            <div className="acitonButtons w-full flex justify-center">
+              <button
+                className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                type="button"
+                onClick={saveClothing}
+              >
+                Save Data
+              </button>
             </div>
             <div>
               <label
@@ -57,28 +122,38 @@ function CatalogueManagement() {
               >
                 Genre
               </label>
-              <Input
-                type="text"
-                name="genre"
-                id="genre"
-                className="mt-1 p-2 block w-full border rounded-md"
+              <Creatable
+                placeholder="The Theme of the Tattoo"
+                required
+                isMulti={false}
                 onChange={(e) => {
-                  setInputs({
-                    ...inputs,
-                    [e.target.name]: e.target.value,
-                  });
+                  setInputs({ ...inputs, genre: e.value });
                 }}
-                value={inputs?.genre}
+                isClearable
+                options={genreOptions}
+                isSearchable
+                isOptionDisabled={(option) => {
+                  let asd;
+                  genreOptions.forEach((element) => {
+                    if (element.value === option.value)
+                      return (asd = element.value);
+                  });
+                  if (option.value == asd) {
+                    return true;
+                  }
+                }}
+                value={{ label: inputs?.genre, value: inputs?.genre }}
               />
             </div>
-          </div>
-          <div className="acitonButtons w-full flex justify-center">
-            <button
-              className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
-              type="submit"
-            >
-              Save Data
-            </button>
+            <div className="acitonButtons w-full flex justify-center">
+              <button
+                className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                type="button"
+                onClick={saveGenre}
+              >
+                Save Data
+              </button>
+            </div>
           </div>
         </Form>
       </PageWrapper>
