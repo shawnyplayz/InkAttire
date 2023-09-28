@@ -67,6 +67,8 @@ router.post("/", async (req, res, next) => {
     size: req.body.size,
     description: req.body.description,
     productImages: req.body.productImages,
+    clothingType: req.body.clothingType,
+    genre: req.body.genre,
   });
   const querySku = await products.findOne({ sku: createProd.sku });
   console.log("querySku==>", querySku);
