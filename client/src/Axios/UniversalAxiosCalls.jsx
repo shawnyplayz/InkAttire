@@ -10,8 +10,11 @@ export let postAxiosCall = async (endpoint, data) => {
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     };
     // Create an Axios instance with default configuration
+    debugger;
+    console.log("process.env.REACT_APP_UAT_URL", process.env.REACT_APP_UAT_URL);
     const instance = axios.create({
-      baseURL: process.env.URL, // Your API's base URL
+      baseURL: process.env.REACT_APP_UAT_URL, // Your API's base URL
+      // baseURL: "https://inklothes-app-backend-y2xvt.ondigitalocean.app",
       headers: {
         "Content-Type": "application/json", // Default content type (you can customize this)
         ..._headers, // Merge custom headers with default headers
@@ -47,9 +50,9 @@ export let getAxiosCall = async (endpoint, data) => {
       headers: _headers,
     };
 
-    console.log(`${process.env.URL}${endpoint}`);
+    console.log(`${process.env.REACT_APP_UAT_URL}${endpoint}`);
     await axios
-      .get(`${process.env.URL}${endpoint}`, request)
+      .get(`${process.env.REACT_APP_UAT_URL}${endpoint}`, request)
       .then((response) => {
         if (response.status) {
           res = response;
@@ -89,10 +92,10 @@ export let deleteAxiosCall = async (endpoint, data) => {
       headers: _headers,
     };
 
-    console.log(`${process.env.URL}${endpoint}/${data}`);
+    console.log(`${process.env.REACT_APP_UAT_URL}${endpoint}/${data}`);
 
     await axios
-      .delete(`${process.env.URL}${endpoint}/${data}`, request)
+      .delete(`${process.env.REACT_APP_UAT_URL}${endpoint}/${data}`, request)
       .then((response) => {
         if (response.status) {
           res = response;
@@ -128,7 +131,7 @@ export let updateAxiosCall = async (endpoint, id, data) => {
     };
     // Create an Axios instance with default configuration
     const instance = axios.create({
-      baseURL: process.env.URL, // Your API's base URL
+      baseURL: process.env.REACT_APP_UAT_URL, // Your API's base URL
       headers: {
         "Content-Type": "application/json", // Default content type (you can customize this)
         ..._headers, // Merge custom headers with default headers

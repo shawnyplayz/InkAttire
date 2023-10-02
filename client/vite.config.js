@@ -5,7 +5,9 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   define: {
     "process.env": {
-      URL: "http://localhost:5000",
+      REACT_APP_DEV_URL: "http://localhost:5000",
+      REACT_APP_UAT_URL:
+        "https://inklothes-app-backend-y2xvt.ondigitalocean.app",
     },
   },
   plugins: [react({})],
