@@ -1,8 +1,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-
+import path from "node:path";
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@store": path.resolve(__dirname, "./src/redux/store"),
+    },
+  },
   define: {
     "process.env": {
       REACT_APP_DEV_URL: "http://localhost:5000",
@@ -11,4 +16,10 @@ export default defineConfig({
     },
   },
   plugins: [react({})],
+  build: {
+    minify: "esbuild",
+    rollupOptions: {
+      external: "sweetalert2.all.min.js",
+    },
+  },
 });
