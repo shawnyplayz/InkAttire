@@ -1,5 +1,4 @@
 import axios from "axios";
-import { connect } from "react-redux";
 import { store } from "../redux/store";
 import Swal from "sweetalert2";
 export let postAxiosCall = async (endpoint, data) => {
@@ -10,7 +9,6 @@ export let postAxiosCall = async (endpoint, data) => {
       Authorization: `Bearer ${localStorage.getItem("access_token")}`,
     };
     // Create an Axios instance with default configuration
-    debugger;
     console.log("process.env.REACT_APP_UAT_URL", process.env.REACT_APP_UAT_URL);
     const instance = axios.create({
       baseURL: process.env.REACT_APP_UAT_URL, // Your API's base URL
