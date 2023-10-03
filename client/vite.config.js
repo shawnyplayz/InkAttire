@@ -17,7 +17,7 @@ export default defineConfig({
   },
   plugins: [react({})],
   build: {
-    minify: "esbuild",
+    cssCodeSplit: false,
     rollupOptions: {
       external: "sweetalert2.all.min.js",
     },
