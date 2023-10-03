@@ -16,10 +16,19 @@ export default defineConfig({
     },
   },
   plugins: [react({})],
+  css: {
+    modules: {
+      localsConvention: "camelCase",
+    },
+  },
   build: {
-    cssCodeSplit: false,
+    sourcemap: true,
+    emptyOutDir: true,
     rollupOptions: {
       external: "sweetalert2.all.min.js",
+      output: {
+        manualChunks: "",
+      },
     },
   },
 });
