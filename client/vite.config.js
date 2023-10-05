@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import path from "node:path";
+import path, { resolve } from "node:path";
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
@@ -30,7 +30,9 @@ export default defineConfig({
     rollupOptions: {
       external: "sweetalert2.all.min.js",
       output: {
-        manualChunks: "",
+        globals: {
+          react: "React",
+        },
       },
     },
   },
