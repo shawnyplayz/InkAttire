@@ -6,6 +6,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@store": path.resolve(__dirname, "./src/redux/store"),
+      "@": path.resolve(__dirname, "/src"),
     },
   },
   define: {

@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import { setAuthenticationHeader } from "../../utils/Authenticate";
 import { connect } from "react-redux";
 import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
-import bkgImg from "../../../public/Images/Loginbkg.webp";
 function Login(props) {
   const navigateTo = useNavigate();
   const [email, setEmail] = useState(null);
@@ -36,7 +35,7 @@ function Login(props) {
     }
   };
   return (
-    <div className="bg-cover h-screen" style={{ backgroundImage: bkgImg }}>
+    <div className="bg-login-img bg-cover h-screen">
       <div className="flex flex-row justify-end align-middle items-center w-full h-screen px-80">
         <div className="card bg-cyan-400">
           <div className="flex flex-col justify-center items-center">
