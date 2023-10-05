@@ -38,7 +38,7 @@ function Login(props) {
   return (
     <div
       className="bg-cover h-screen"
-      style={{ backgroundImage: "url(../src/assets/Images/Loginbkg.webp)" }}
+      style={{ backgroundImage: "url(../../../public/Images/Loginbkg.webp)" }}
     >
       <div className="flex flex-row justify-end align-middle items-center w-full h-screen px-80">
         <div className="card bg-cyan-400">
