@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path, { resolve } from "node:path";
-import asd from "./src/assets/Images";
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
