@@ -1,12 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path, { resolve } from "node:path";
+import asd from "./src/assets/Images";
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
     alias: {
       "@store": path.resolve(__dirname, "./src/redux/store"),
-      "@": path.resolve(__dirname, "/src"),
+      // "@loginbkg": path.resolve(
+      //   __filename,
+      //   "url(./src/assets/Images/Loginbkg.webp)"
+      // ),
     },
   },
   define: {
