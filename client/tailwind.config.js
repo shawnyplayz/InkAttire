@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: ["./index.html", "./src/**/*.{html,js,jsx}", "./src/**/*"],
   theme: {
@@ -7,7 +8,7 @@ export default {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        "login-img": "url('./src/Images/Loginbkg.webp')",
+        "login-img": "url('./src/assets/Images/Loginbkg.webp')",
       },
       fontFamily: {
         gill: ["Gill Sans, Gill Sans MT, Calibri, Trebuchet MS, sans-serif"],

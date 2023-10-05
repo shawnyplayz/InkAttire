@@ -21,6 +21,9 @@ export default defineConfig({
       localsConvention: "camelCase",
     },
   },
+  server: {
+    port: 3000,
+  },
   build: {
     sourcemap: true,
     emptyOutDir: true,
