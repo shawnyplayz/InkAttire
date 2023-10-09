@@ -23,7 +23,6 @@ function Login(props) {
         password,
         process.env.REACT_APP_ENCRYPTION
       ).toString();
-      "process.env.REACT_APP_ENCRYPTION", process.env.REACT_APP_ENCRYPTION;
       const answer = await postAxiosCall("/login", {
         encryptedEmail,
         encryptedPassword,
