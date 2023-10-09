@@ -52,7 +52,7 @@ router.get("/:id", async (req, res, next) => {
 });
 //Creating One
 router.post("/", async (req, res, next) => {
-  console.log("Request==>", req.body);
+  "Request==>", req.body;
   const createProd = new products({
     sku: req.body.sku,
     name: req.body.name,
@@ -71,9 +71,9 @@ router.post("/", async (req, res, next) => {
     genre: req.body.genre,
   });
   const querySku = await products.findOne({ sku: createProd.sku });
-  console.log("querySku==>", querySku);
+  "querySku==>", querySku;
   if (createProd.sku === querySku?.sku) {
-    console.log("SKU name already EXISTS");
+    ("SKU name already EXISTS");
     res.status(500).json({ message: "SKU name already exists" });
     return;
   } else {

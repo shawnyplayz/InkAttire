@@ -2,6 +2,7 @@ const users = require("../models/users");
 const express = require("express");
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const CryptoJS = require("crypto-js");
 
 const allUsers = async (req, res) => {
   const allUsers = await users.find({});
@@ -45,8 +46,20 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     //Get all details off the req
-    const { email, password } = req.body;
-    console.log(password);
+    const { encryptedEmail, encryptedPassword } = req.body;
+    debugger;
+    "encryptedEmail", encryptedEmail;
+    "encryptedPassword", encryptedPassword;
+    const email = CryptoJS.AES.decrypt(
+      encryptedEmail,
+      process.env.ENCRYPTION
+    ).toString(CryptoJS.enc.Utf8);
+    const password = CryptoJS.AES.decrypt(
+      encryptedPassword,
+      process.env.ENCRYPTION
+    ).toString(CryptoJS.enc.Utf8);
+    debugger;
+    "email", email;
     if (!(email || password)) {
       return res
         .status(400)
@@ -92,7 +105,7 @@ const login = async (req, res) => {
 const logout = (req, res) => {};
 
 const checkAuth = (req, res) => {
-  console.log("req.user==>", req.user);
+  "req.user==>", req.user;
   return res.sendStatus(200);
 };
 module.exports = {

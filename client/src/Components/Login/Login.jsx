@@ -7,24 +7,35 @@ import { setAuthenticationHeader } from "../../utils/Authenticate";
 import { connect } from "react-redux";
 import { postAxiosCall } from "../../Axios/UniversalAxiosCalls";
 import loginbkg from "../../assets/Images/Loginbkg.webp";
+import CryptoJS from "crypto-js";
+
 function Login(props) {
   const navigateTo = useNavigate();
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const onLogin = async () => {
     try {
+      const encryptedEmail = CryptoJS.AES.encrypt(
+        email,
+        process.env.REACT_APP_ENCRYPTION
+      ).toString();
+      const encryptedPassword = CryptoJS.AES.encrypt(
+        password,
+        process.env.REACT_APP_ENCRYPTION
+      ).toString();
+      "process.env.REACT_APP_ENCRYPTION", process.env.REACT_APP_ENCRYPTION;
       const answer = await postAxiosCall("/login", {
-        email: email,
-        password: password,
+        encryptedEmail,
+        encryptedPassword,
       });
 
-      console.log(answer);
+      answer;
       if (answer) {
         localStorage.setItem("access_token", answer?.token);
         props.isLoggedIn(answer?.sendUserInfo[0]);
         navigateTo("/home");
       } else {
-        console.log("error");
+        ("error");
       }
     } catch (error) {
       Swal.fire({

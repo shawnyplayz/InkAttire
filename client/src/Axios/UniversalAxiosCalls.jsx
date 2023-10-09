@@ -50,7 +50,6 @@ export let getAxiosCall = async (endpoint, data) => {
       headers: _headers,
     };
 
-    console.log(`${process.env.REACT_APP_UAT_URL}${endpoint}`);
     await axios
       .get(`${process.env.REACT_APP_UAT_URL}${endpoint}`, request)
       .then((response) => {
@@ -92,7 +91,7 @@ export let deleteAxiosCall = async (endpoint, data) => {
       headers: _headers,
     };
 
-    console.log(`${process.env.REACT_APP_UAT_URL}${endpoint}/${data}`);
+    `${process.env.REACT_APP_UAT_URL}${endpoint}/${data}`;
 
     await axios
       .delete(`${process.env.REACT_APP_UAT_URL}${endpoint}/${data}`, request)

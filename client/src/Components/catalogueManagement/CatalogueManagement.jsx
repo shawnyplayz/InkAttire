@@ -83,8 +83,9 @@ function CatalogueManagement() {
                 isClearable
                 isMulti={false}
                 onChange={(e) => {
-                  setInputs({ ...inputs, clothingType: e.value }, () =>
-                    console.log("inputs==>", inputs)
+                  setInputs(
+                    { ...inputs, clothingType: e.value },
+                    () => ("inputs==>", inputs)
                   );
                 }}
                 options={clothingOptions}

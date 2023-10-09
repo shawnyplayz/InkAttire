@@ -4,7 +4,6 @@ import Navigation from "./Navigation/Navigation";
 import { Spin } from "antd";
 
 function App(props) {
-  console.log("props", props);
   return (
     <>
       <Spin

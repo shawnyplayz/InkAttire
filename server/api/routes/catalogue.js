@@ -36,7 +36,7 @@ router.post("/", async (req, res) => {
     clothingType: req.body?.clothingType,
     genre: req.body?.genre,
   });
-  console.log("createCata", createCata);
+  "createCata", createCata;
 
   if (!createCata?.clothingType && !createCata?.genre) {
     res.status(500).json({ message: "Fields cannot be empty" });
@@ -49,7 +49,7 @@ router.post("/", async (req, res) => {
       res.status(500).json({ message: "This Clothing Type already exists" });
     } else {
       try {
-        console.log("Saving Product");
+        ("Saving Product");
         await createCata.save();
         res.status(201).json({ message: "Successfully Added a Clothing" });
       } catch (error) {
@@ -73,21 +73,21 @@ router.post("/", async (req, res) => {
   //   clothingType: createCata.clothingType,
   // });
   // const queryGenreType = await catalogue.findOne({ genre: createCata.genre });
-  // console.log("queryClothingType", queryClothingType);
-  // console.log("queryGenreType", queryGenreType);
+  // ("queryClothingType", queryClothingType);
+  // ("queryGenreType", queryGenreType);
 
   // if (
   //   createCata?.clothingType === queryClothingType?.clothingType ||
   //   createCata?.genre === queryGenreType?.genre
   // ) {
   //   if (queryClothingType?.clothingType) {
-  //     console.log("clothingType", queryClothingType?.clothingType);
+  //     ("clothingType", queryClothingType?.clothingType);
   //     res.status(500).json({
   //       message: createCata.clothingType + " already exists",
   //     });
   //     return;
   //   } else if (queryGenreType?.genre) {
-  //     console.log("genreType", queryGenreType?.genre);
+  //     ("genreType", queryGenreType?.genre);
   //     res.status(500).json({
   //       message: createCata.genre + " already exists",
   //     });
@@ -95,7 +95,7 @@ router.post("/", async (req, res) => {
   //   }
   // } else {
   //   try {
-  //     console.log("Saving Product");
+  //     ("Saving Product");
   //     await createCata.save();
   //     res.status(201).json({ message: "Successfully Added a Product" });
   //   } catch (error) {

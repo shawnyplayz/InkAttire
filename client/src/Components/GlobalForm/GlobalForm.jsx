@@ -185,7 +185,7 @@ function GlobalForm(props) {
   const remove = async () => {
     const answer = await deleteAxiosCall("/products", inputs._id);
 
-    console.log("answer", answer);
+    "answer", answer;
     if (answer) {
       Swal.fire({
         title: "Success",
@@ -213,7 +213,7 @@ function GlobalForm(props) {
     }
     const answer = await updateAxiosCall("/products", inputs.sku, inputs);
 
-    console.log("answer", answer);
+    "answer", answer;
     if (answer) {
       Swal.fire({
         title: "Success",
@@ -303,7 +303,7 @@ function GlobalForm(props) {
   const deleteImage = async (imageIndex) => {
     const dupli = inputs?.productImages;
     dupli?.splice(imageIndex, 1);
-    console.log(dupli);
+    dupli;
     setInputs({ ...inputs, productImages: dupli });
   };
   const deleteModal = (index) => {
@@ -467,8 +467,9 @@ function GlobalForm(props) {
                   isClearable
                   isMulti={false}
                   onChange={(e) => {
-                    setInputs({ ...inputs, clothingType: e.value }, () =>
-                      console.log("inputs==>", inputs)
+                    setInputs(
+                      { ...inputs, clothingType: e.value },
+                      () => ("inputs==>", inputs)
                     );
                   }}
                   isDisabled={

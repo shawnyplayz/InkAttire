@@ -7,10 +7,10 @@ function DeleteInner() {
   const [record, setRecord] = useState(location.state);
   useEffect(() => {
     if (location?.state) {
-      console.log("Location state", location.state);
+      "Location state", location.state;
       let asd = { ...location.state };
       setRecord(asd);
-      console.log("record==>", record);
+      "record==>", record;
     }
   }, [location]);
 
