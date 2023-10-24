@@ -22,6 +22,7 @@ db.once("open", () => {
 
 const productRoutes = require("./api/routes/products");
 const userRoutes = require("./api/routes/users");
+const cmsRoutes = require("./api/routes/cms");
 const catalogueRoutes = require("./api/routes/catalogue");
 const requireAuth = require("./api/middleware/requireAuth");
 app.use(cors());
@@ -44,5 +45,7 @@ app.post("/login", userRoutes.login);
 app.get("/check-auth", requireAuth, userRoutes.checkAuth);
 app.post("/logout", userRoutes.logout);
 app.get("/users", requireAuth, userRoutes.allUsers);
+app.get("/cms", cmsRoutes.getCarousel);
+app.post("/cms", cmsRoutes.postCarousel);
 
 module.exports = app;

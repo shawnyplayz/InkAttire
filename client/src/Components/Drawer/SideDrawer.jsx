@@ -27,6 +27,10 @@ const menu = [
     text: "View Users",
     link: "/viewusers",
   },
+  {
+    text: "Content Management System",
+    link: "/cms",
+  },
 ];
 function SideDrawer() {
   const [open, setOpen] = useState(false);

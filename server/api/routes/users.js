@@ -47,7 +47,7 @@ const login = async (req, res) => {
   try {
     //Get all details off the req
     const { encryptedEmail, encryptedPassword } = req.body;
-    debugger;
+
     "encryptedEmail", encryptedEmail;
     "encryptedPassword", encryptedPassword;
     const email = CryptoJS.AES.decrypt(
@@ -58,7 +58,7 @@ const login = async (req, res) => {
       encryptedPassword,
       process.env.ENCRYPTION
     ).toString(CryptoJS.enc.Utf8);
-    debugger;
+
     "email", email;
     if (!(email || password)) {
       return res

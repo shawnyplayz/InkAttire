@@ -20,6 +20,7 @@ import ViewInner from "../Components/viewProd/ViewInner";
 import UpdateInner from "../Components/updateProd/UpdateInner";
 import Robots from "../Components/Robots/Robots";
 import CatalogueManagement from "../Components/catalogueManagement/CatalogueManagement";
+import CMS from "../Components/cms/CMS";
 
 function Navigation(props) {
   const location = useLocation();
@@ -70,6 +71,7 @@ function Navigation(props) {
                 element={<ProductTable pageMode="Update" />}
               />
               <Route path="/updateinner" element={<UpdateInner />} />
+              <Route path="/cms" element={<CMS />} />
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>
