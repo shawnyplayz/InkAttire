@@ -5,7 +5,7 @@ const cms = require("../models/cms");
 const getCarousel = async (req, res) => {
   let getCar = await cms.find({});
   try {
-    res.status(200).json(getCar);
+    res.status(200).json(...getCar);
   } catch (error) {
     res.status(500).json({ message: error });
   }
