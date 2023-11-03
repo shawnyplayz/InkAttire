@@ -46,6 +46,7 @@ app.get("/check-auth", requireAuth, userRoutes.checkAuth);
 app.post("/logout", userRoutes.logout);
 app.get("/users", requireAuth, userRoutes.allUsers);
 app.get("/cms", cmsRoutes.getCarousel);
-app.post("/cms", cmsRoutes.postCarousel);
+app.post("/cms", requireAuth,cmsRoutes.postCarousel);
+app.delete("/cms/:id",requireAuth,cmsRoutes.deleteCarousel);
 
 module.exports = app;

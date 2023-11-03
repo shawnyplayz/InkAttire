@@ -14,10 +14,6 @@ const productsSchema = new mongoose.Schema({
     type: String,
     require: true,
   },
-  Length: {
-    type: Number,
-    required: true,
-  },
   quantity: {
     type: Number,
     required: true,
@@ -26,7 +22,6 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
-
   price: {
     type: Number,
     required: true,
@@ -38,10 +33,6 @@ const productsSchema = new mongoose.Schema({
   savings: {
     type: Number,
     required: false,
-  },
-  width: {
-    type: Number,
-    required: true,
   },
   size: {
     type: String,
@@ -67,6 +58,23 @@ const productsSchema = new mongoose.Schema({
     type: Array,
     required: true,
   },
+  sales:{
+    type:Number,
+    require:false,
+    default : 0
+  },
+  reviews:{
+    type:Array,
+    require:false,
+  },
+  ratings:{
+    type:Number,
+    require:false
+  },
+  skinShade:{
+    type:String,
+    require:true
+  }
 });
 
 module.exports = mongoose.model("products", productsSchema);

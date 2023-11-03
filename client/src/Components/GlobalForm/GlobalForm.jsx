@@ -16,6 +16,7 @@ import {
   Switch,
   TreeSelect,
   Upload,
+  
 } from "antd";
 import {
   deleteAxiosCall,
@@ -30,10 +31,6 @@ const { TextArea } = Input;
 function GlobalForm(props) {
   const opt = [
     {
-      value: "XS",
-      label: "Extra Small",
-    },
-    {
       value: "S",
       label: "Small",
     },
@@ -45,6 +42,20 @@ function GlobalForm(props) {
       value: "L",
       label: "Large",
     },
+    {
+      value: "XL",
+      label: "Extra Large",
+    },
+  ];
+  const shadeOpt = [
+    {
+      value: "Light",
+      label: "Light Skin",
+    },
+    {
+      value: "Dark",
+      label: "Dark Skin",
+    }
   ];
   const [inputs, setInputs] = useState({});
   const [imageClone, setImageClone] = useState(props?.record?.productImages);
@@ -161,6 +172,7 @@ function GlobalForm(props) {
       return;
     }
     try {
+      
       const answer = await postAxiosCall("/products", inputs);
 
       if (answer) {
@@ -184,8 +196,6 @@ function GlobalForm(props) {
   };
   const remove = async () => {
     const answer = await deleteAxiosCall("/products", inputs._id);
-
-    "answer", answer;
     if (answer) {
       Swal.fire({
         title: "Success",
@@ -247,10 +257,20 @@ function GlobalForm(props) {
     }
     switch (props.pageMode) {
       case "Add":
+        
         if (!inputs.hasOwnProperty("size")) {
           Swal.fire({
             title: "Error",
             text: "Please select a size",
+            icon: "error",
+            confirmButtonText: "ok",
+          });
+          return;
+        }
+        if(!inputs.hasOwnProperty("skinShade")){
+          Swal.fire({
+            title: "Error",
+            text: "Please select a Skin Colour",
             icon: "error",
             confirmButtonText: "ok",
           });
@@ -401,7 +421,7 @@ function GlobalForm(props) {
                   value={inputs?.title}
                 />
               </div>
-              <div>
+              {/* <div>
                 <label
                   htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
@@ -427,13 +447,13 @@ function GlobalForm(props) {
                   }}
                   value={inputs?.Length}
                 />
-              </div>
-              <div>
+              </div> */}
+              {/* <div>
                 <label
                   htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Width in cms
+                  Width in inches
                 </label>
                 <Input
                   disabled={
@@ -454,7 +474,7 @@ function GlobalForm(props) {
                   }}
                   value={inputs?.width}
                 />
-              </div>
+              </div> */}
               <div>
                 <label
                   htmlFor="name"
@@ -665,6 +685,40 @@ function GlobalForm(props) {
                   })}
                 </select>
               </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Select Skin Shade
+                </label>
+                <select
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  value={inputs?.skinShade}
+                  onChange={(e) => {
+                    setInputs({ ...inputs, skinShade: e.target.value });
+                  }}
+                  name="skinShade"
+                  size="large"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                >
+                  {shadeOpt?.map((el) => {
+                    return (
+                      <>
+                        <option value="" selected disabled hidden>
+                          Choose here
+                        </option>
+                        <option value={el.value}>{el.label}</option>
+                      </>
+                    );
+                  })}
+                </select>
+              </div>
             </div>
             <div className="my-5">
               <label
@@ -689,6 +743,15 @@ function GlobalForm(props) {
                 }}
                 value={inputs?.description}
               />
+            </div>
+            <div className="my-5">
+              <label
+                htmlFor="name"
+                className="block text-7xl font-semibold text-gray-700"
+              >
+                Sales
+              </label>
+              {inputs.sales ? inputs.sales : 0}
             </div>
             {/* Upload Pictures */}
             {props.pageMode === "Add" || props.pageMode === "Update" ? (

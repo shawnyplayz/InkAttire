@@ -48,6 +48,8 @@ function ProductTable(props) {
   const [switchRoutes, setSwitchRoutes] = useState(false);
   const navigateTo = useNavigate();
   useEffect(() => {
+    //Use Effect is being called twice
+    
     answer();
   }, []);
   const answer = async () => {

@@ -23,7 +23,8 @@
       "react-select": "^5.7.5",
       "redux": "^4.2.1",
       "redux-persist": "^6.0.0",
-      "sweetalert2": "^11.7.28"
+      "sweetalert2": "^11.7.28",
+      "uuid": "^9.0.1"
    },
    "devDependencies": {
       "@types/react": "^18.2.15",

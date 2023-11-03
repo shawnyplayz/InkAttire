@@ -9,7 +9,7 @@ function App(props) {
       <Spin
         spinning={props?.loading == undefined ? false : props?.loading}
         size="large"
-        tip="Faster than windows update!"
+        tip="Powered by Innovative Cursor"
       >
         <Navigation />
       </Spin>

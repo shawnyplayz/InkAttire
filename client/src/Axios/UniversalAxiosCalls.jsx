@@ -38,6 +38,7 @@ export let postAxiosCall = async (endpoint, data) => {
   }
 };
 export let getAxiosCall = async (endpoint, data) => {
+  
   try {
     store.dispatch({ type: "LOADING", payload: true });
     let res = null;
