@@ -94,7 +94,7 @@ function CMS() {
     });
   }
   return (
-    <PageWrapper title="Content Management System">
+    <PageWrapper title="Carousel Management System">
       <div className="container mx-auto p-4 text-xl">
         <Spin spinning={loading}>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -144,7 +144,7 @@ function CMS() {
             {carouselImages?.map((el, index) => {
               return (
                 <div className="card" key={index}>
-                  <div className="flex h-1/2 justify-center">
+                  <div className="flex h-60 justify-center">
                     <img
                       src={el.img}
                       alt="Newly added"

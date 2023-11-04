@@ -802,7 +802,7 @@ function GlobalForm(props) {
                 <div className="w-full flex flex-row">
                   {imageClone?.map((el, index) => (
                     <div className="card" key={index}>
-                      <div className="flex h-1/2 justify-center">
+                      <div className="flex h-60 justify-center">
                         <img src={el} alt="asd4e" className="object-contain" />
                       </div>
                       {props.pageMode !== "View" &&

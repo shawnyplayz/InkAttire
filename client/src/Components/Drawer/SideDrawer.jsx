@@ -28,7 +28,7 @@ const menu = [
     link: "/viewusers",
   },
   {
-    text: "Content Management System",
+    text: "Carousel Management System",
     link: "/cms",
   },
 ];
@@ -68,13 +68,6 @@ function SideDrawer() {
         }
       >
         <ul>
-          {/* <li>
-            <NavLink to="/createproduct">
-              <div className="card hover:bg-blue-300 hover:text-white text-xl font-medium">
-                Add a Product
-              </div>
-            </NavLink>
-          </li> */}
           {menu.map((el) => {
             return (
               <li onClick={onClose}>
