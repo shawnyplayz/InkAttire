@@ -5,11 +5,14 @@ const products = require("../models/products");
 const getCarousel = async (req, res) => {
   var distinctValues = await products.distinct("genre");
   let getFeatured = await products.find({"genre":{$in:distinctValues}})
+  console.log("getFeatured",getFeatured);
   const pushFeatured = new cms({
     featuredProducts : [...getFeatured]
   })
   try {    
-    await pushFeatured.save();
+    await cms.updateOne({
+      $set:{featuredProducts:[...getFeatured]}
+    });
     let getCar = await cms.find({});
     res.status(200).json(...getCar);
   } catch (error) {

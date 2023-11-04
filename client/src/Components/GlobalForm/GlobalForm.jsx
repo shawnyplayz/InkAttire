@@ -242,6 +242,7 @@ function GlobalForm(props) {
           typeof inputs[key] === "number" &&
           inputs[key] === 0 &&
           key != "discount_percent" &&
+          key !="sales" &&
           key != "__v"
         ) {
           // const el = inputs[key];
