@@ -28,32 +28,25 @@ const getCarousel = async (req, res) => {
 };
 
 const postCarousel = async (req, res) => {
-  let postCar = new cms({
-    carousel: req.body.carousel,
-  });
   try {
-  const result = await cloudinary.uploader.upload(req.body.carousel[0].img,{
-      folder:"carousel"
-    })
-    console.log('carousel Image :>> ', result);
+ const uploadPromises = req.body.carousel?.map((base64Data) => {
+      // Upload each image to Cloudinary
+      return cloudinary.uploader.upload(base64Data, {
+        folder: 'carousel', // Specify the folder for uploaded images
+      });
+    });
 
-    let getCar = await cms.find({});
-    console.log(getCar);
-    if (getCar.length != 0) {
-      await cms
+    const uploadedImages = await Promise.all(uploadPromises);
+    await cms
         .updateOne({ $push: { carousel: { $each: [{
-          url: result.secure_url,
-          public_id: result.public_id,
+          url: uploadedImages.secure_url,
+          public_id: uploadedImages.public_id,
       }]} } })
         .then(() => {
           return res.status(201).json({
             message: "Updated Successfully!",
           });
         });
-    } else {
-      await postCar.save();
-      res.status(201).json({ message: "Successfully Added a Slide" });
-    }
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
