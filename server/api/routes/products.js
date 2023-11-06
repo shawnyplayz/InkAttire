@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const products = require("../models/products");
 const multer = require("multer");
+const cloudinary = require("../../utils/cloudinary");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -52,7 +53,15 @@ router.get("/:id", async (req, res, next) => {
 });
 //Creating One
 router.post("/", async (req, res, next) => {
-  "Request==>", req.body;
+  const uploadPromises = req.body.productImages?.map((base64Data) => {
+    // Upload each image to Cloudinary
+    return cloudinary.uploader.upload(base64Data, {
+      folder: 'productImages', // Specify the folder for uploaded images
+    });
+  });
+
+  const uploadedImages = await Promise.all(uploadPromises);
+
   const createProd = new products({
     sku: req.body.sku,
     name: req.body.name,
@@ -66,7 +75,8 @@ router.post("/", async (req, res, next) => {
     quantity: req.body.quantity,
     size: req.body.size,
     description: req.body.description,
-    productImages: req.body.productImages,
+    // productImages: req.body.productImages,
+    productImages: uploadedImages,
     clothingType: req.body.clothingType,
     genre: req.body.genre,
   });
@@ -89,20 +99,22 @@ router.post("/", async (req, res, next) => {
 router.put("/:id", async (req, res, next) => {
   try {
     if (req.body.sku != null) {
-      // const updateProd = new products({
-      //   // _id: req.body.id,
-      //   sku: req.body.sku,
-      //   name: req.body.name,
-      //   title: req.body.title,
-      //   Length: req.body.Length,
-      //   width: req.body.width,
-      //   price: req.body.price,
-      //   discount_percent: req.body.discount_percent,
-      //   quantity: req.body.quantity,
-      //   size: req.body.size,
-      //   description: req.body.description,
-      //   productImages: req.body.productImages,
-      // });
+      const uploadPromises = req.body.productImages?.map((base64Data) => {
+        //Check if the Image is Base64(String format), Only then hit the API..
+        if(typeof(base64Data) === 'string'){
+ // Upload each image to Cloudinary
+ return cloudinary.uploader.upload(base64Data, {
+  folder: 'productImages', // Specify the folder for uploaded images
+});
+        }
+        else{
+          return base64Data;
+        }
+      });
+    
+      const uploadedImages = await Promise.all(uploadPromises);
+      req.body.productImages = uploadedImages;
+      console.log('req.body :>> ', req.body);
       await products.updateOne({ sku: req.params.id }, req.body).then(() => {
         return res.status(201).json({
           message: "Updated Successfully!",

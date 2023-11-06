@@ -324,7 +324,6 @@ function GlobalForm(props) {
   const deleteImage = async (imageIndex) => {
     const dupli = inputs?.productImages;
     dupli?.splice(imageIndex, 1);
-    dupli;
     setInputs({ ...inputs, productImages: dupli });
   };
   const deleteModal = (index) => {
@@ -803,7 +802,7 @@ function GlobalForm(props) {
                   {imageClone?.map((el, index) => (
                     <div className="card" key={index}>
                       <div className="flex h-60 justify-center">
-                        <img src={el} alt="asd4e" className="object-contain" />
+                        <img src={el?.url} alt="asd4e" className="object-contain" />
                       </div>
                       {props.pageMode !== "View" &&
                       props.pageMode !== "Delete" ? (
