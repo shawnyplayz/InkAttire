@@ -22,7 +22,7 @@ function CMS() {
     setCarouselImages(getCarouselImages?.data?.carousel);
   };
   const deleteCarouselImages = async (id)=>{
-    const answer = await deleteAxiosCall("/cms",id);
+    const answer = await postAxiosCall("/cms/delete",{id});
     if (answer) {
       Swal.fire({
         title: "Success",
@@ -146,7 +146,7 @@ function CMS() {
                 <div className="card" key={index}>
                   <div className="flex h-60 justify-center">
                     <img
-                      src={el.img}
+                      src={el?.url}
                       alt="Newly added"
                       className="object-contain"
                     />
@@ -154,7 +154,7 @@ function CMS() {
                   <div className="flex flex-row justify-center items-end">
                     <button
                       className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
-                      onClick={() => deleteModal(el.img_id)}
+                      onClick={() => deleteModal(el?.public_id)}
                       type="button"
                     >
                       Delete Picture

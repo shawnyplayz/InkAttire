@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 var cookieParser = require("cookie-parser");
+// const { CLIENT_ORIGIN } = require('./config')
 
 const app = express();
 
@@ -25,6 +26,7 @@ const userRoutes = require("./api/routes/users");
 const cmsRoutes = require("./api/routes/cms");
 const catalogueRoutes = require("./api/routes/catalogue");
 const requireAuth = require("./api/middleware/requireAuth");
+
 app.use(cors());
 app.use(
   bodyParser.urlencoded({
@@ -47,6 +49,6 @@ app.post("/logout", userRoutes.logout);
 app.get("/users", requireAuth, userRoutes.allUsers);
 app.get("/cms", cmsRoutes.getCarousel);
 app.post("/cms", requireAuth,cmsRoutes.postCarousel);
-app.delete("/cms/:id",requireAuth,cmsRoutes.deleteCarousel);
+app.post("/cms/delete",requireAuth,cmsRoutes.deleteCarousel);
 
 module.exports = app;
