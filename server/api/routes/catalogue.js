@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const catalogue = require("../models/catalogue");
+const products = require("../models/products");
 
 router.get("/", async (req, res) => {
   try {
@@ -36,8 +37,6 @@ router.post("/", async (req, res) => {
     clothingType: req.body?.clothingType,
     genre: req.body?.genre,
   });
-  "createCata", createCata;
-
   if (!createCata?.clothingType && !createCata?.genre) {
     res.status(500).json({ message: "Fields cannot be empty" });
   } else if (createCata.clothingType) {
@@ -69,38 +68,50 @@ router.post("/", async (req, res) => {
       }
     }
   }
-  // const queryClothingType = await catalogue.findOne({
-  //   clothingType: createCata.clothingType,
-  // });
-  // const queryGenreType = await catalogue.findOne({ genre: createCata.genre });
-  // ("queryClothingType", queryClothingType);
-  // ("queryGenreType", queryGenreType);
-
-  // if (
-  //   createCata?.clothingType === queryClothingType?.clothingType ||
-  //   createCata?.genre === queryGenreType?.genre
-  // ) {
-  //   if (queryClothingType?.clothingType) {
-  //     ("clothingType", queryClothingType?.clothingType);
-  //     res.status(500).json({
-  //       message: createCata.clothingType + " already exists",
-  //     });
-  //     return;
-  //   } else if (queryGenreType?.genre) {
-  //     ("genreType", queryGenreType?.genre);
-  //     res.status(500).json({
-  //       message: createCata.genre + " already exists",
-  //     });
-  //     return;
-  //   }
-  // } else {
-  //   try {
-  //     ("Saving Product");
-  //     await createCata.save();
-  //     res.status(201).json({ message: "Successfully Added a Product" });
-  //   } catch (error) {
-  //     res.status(500).json({ message: error });
-  //   }
-  // }
+});
+router.post("/deleteClothing/", async (req, res) => {
+  try {
+    if (req.body.clothingType) {
+      let checkClothing = await products.findOne({
+        clothingType: req.body.clothingType,
+      });
+      if (checkClothing) {
+        res.status(500).json({
+          message:
+            "Cannot delete a Category of clothing when associated with a product!",
+        });
+      } else {
+        await catalogue.deleteOne({ clothingType: req.body.clothingType });
+        res
+          .status(200)
+          .json({ message: "Successfully deleted a Type of Clothing!" });
+      }
+    } else {
+      res.status(401).json({ message: "Cannot delete a null value!" });
+    }
+  } catch (error) {
+    res.status(401).json({ message: error });
+  }
+});
+router.post("/deleteGenre/", async (req, res) => {
+  try {
+    if (req.body.genre) {
+      let checkGenre = await products.findOne({
+        genre: req.body.genre,
+      });
+      if (checkGenre) {
+        res.status(500).json({
+          message: "Cannot delete this genre when associated with a product!",
+        });
+      } else {
+        await catalogue.deleteOne({ genre: req.body.genre });
+        res.status(200).json({ message: "Successfully deleted a Genre!" });
+      }
+    } else {
+      res.status(401).json({ message: "Cannot delete a null value!" });
+    }
+  } catch (error) {
+    res.status(401).json({ message: error });
+  }
 });
 module.exports = router;

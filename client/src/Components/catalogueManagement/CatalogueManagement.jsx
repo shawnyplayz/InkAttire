@@ -10,6 +10,8 @@ function CatalogueManagement() {
   const [inputs, setInputs] = useState({});
   const [clothingOptions, setClothingOptions] = useState(null);
   const [genreOptions, setGenreOptions] = useState(null);
+  const [clothingButton, setClothingButton] = useState("Save Data");
+  const [genreButton, setGenreButton] = useState("Save Data");
   useEffect(() => {
     callCatalogue();
   }, []);
@@ -32,35 +34,69 @@ function CatalogueManagement() {
     }
   };
   const saveClothing = async () => {
-    const result = await postAxiosCall("/catalogue", {
-      clothingType: inputs.clothingType,
-    });
-    if (result) {
-      Swal.fire({
-        title: "Success",
-        text: result?.message,
-        icon: "success",
-        confirmButtonText: "Great!",
-      }).then(() => {
-        setInputs({ ...inputs, clothingType: null });
-        callCatalogue();
+    if (clothingButton === "Save Data") {
+      const result = await postAxiosCall("/catalogue", {
+        clothingType: inputs.clothingType,
       });
+      if (result) {
+        Swal.fire({
+          title: "Success",
+          text: result?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+        }).then(() => {
+          setInputs({ ...inputs, clothingType: null });
+          callCatalogue();
+        });
+      }
+    } else {
+      const result = await postAxiosCall("/catalogue/deleteClothing", {
+        clothingType: inputs.clothingType,
+      });
+      if (result) {
+        Swal.fire({
+          title: "Success",
+          text: result?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+        }).then(() => {
+          setInputs({ ...inputs, clothingType: null });
+          callCatalogue();
+        });
+      }
     }
   };
   const saveGenre = async () => {
-    const result = await postAxiosCall("/catalogue", {
-      genre: inputs.genre,
-    });
-    if (result) {
-      Swal.fire({
-        title: "Success",
-        text: result?.message,
-        icon: "success",
-        confirmButtonText: "Great!",
-      }).then(() => {
-        setInputs({ ...inputs, genre: null });
-        callCatalogue();
+    if (genreButton === "Save Data") {
+      const result = await postAxiosCall("/catalogue", {
+        genre: inputs.genre,
       });
+      if (result) {
+        Swal.fire({
+          title: "Success",
+          text: result?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+        }).then(() => {
+          setInputs({ ...inputs, genre: null });
+          callCatalogue();
+        });
+      }
+    } else {
+      const result = await postAxiosCall("/catalogue/deleteGenre", {
+        genre: inputs.genre,
+      });
+      if (result) {
+        Swal.fire({
+          title: "Success",
+          text: result?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+        }).then(() => {
+          setInputs({ ...inputs, genre: null });
+          callCatalogue();
+        });
+      }
     }
   };
   return (
@@ -83,10 +119,15 @@ function CatalogueManagement() {
                 isClearable
                 isMulti={false}
                 onChange={(e) => {
-                  setInputs(
-                    { ...inputs, clothingType: e.value },
-                    () => ("inputs==>", inputs)
+                  let finalText = clothingOptions.filter(
+                    (el) => el.value === e.value
                   );
+                  if (finalText.length != 0) {
+                    setClothingButton("Delete Data");
+                  } else {
+                    setGenreButton("Save Data");
+                  }
+                  setInputs({ ...inputs, clothingType: e.value });
                 }}
                 options={clothingOptions}
                 isSearchable
@@ -95,16 +136,16 @@ function CatalogueManagement() {
                   label: inputs?.clothingType,
                   value: inputs?.clothingType,
                 }}
-                isOptionDisabled={(option) => {
-                  let asd;
-                  clothingOptions.forEach((element) => {
-                    if (element.value === option.value)
-                      return (asd = element.value);
-                  });
-                  if (option.value == asd) {
-                    return true;
-                  }
-                }}
+                // isOptionDisabled={(option) => {
+                //   let asd;
+                //   clothingOptions?.forEach((element) => {
+                //     if (element.value === option.value)
+                //       return (asd = element.value);
+                //   });
+                //   if (option.value == asd) {
+                //     return true;
+                //   }
+                // }}
               />
             </div>
             <div className="acitonButtons w-full flex justify-center">
@@ -112,8 +153,9 @@ function CatalogueManagement() {
                 className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
                 type="button"
                 onClick={saveClothing}
+                disabled={inputs?.clothingType ? false : true}
               >
-                Save Data
+                {clothingButton}
               </button>
             </div>
             <div>
@@ -128,21 +170,29 @@ function CatalogueManagement() {
                 required
                 isMulti={false}
                 onChange={(e) => {
+                  let finalText = genreOptions.filter(
+                    (el) => el.value === e.value
+                  );
+                  if (finalText.length != 0) {
+                    setGenreButton("Delete Data");
+                  } else {
+                    setGenreButton("Save Data");
+                  }
                   setInputs({ ...inputs, genre: e.value });
                 }}
                 isClearable
                 options={genreOptions}
                 isSearchable
-                isOptionDisabled={(option) => {
-                  let asd;
-                  genreOptions.forEach((element) => {
-                    if (element.value === option.value)
-                      return (asd = element.value);
-                  });
-                  if (option.value == asd) {
-                    return true;
-                  }
-                }}
+                // isOptionDisabled={(option) => {
+                //   let asd;
+                //   genreOptions.forEach((element) => {
+                //     if (element.value === option.value)
+                //       return (asd = element.value);
+                //   });
+                //   if (option.value == asd) {
+                //     return true;
+                //   }
+                // }}
                 value={{ label: inputs?.genre, value: inputs?.genre }}
               />
             </div>
@@ -151,8 +201,9 @@ function CatalogueManagement() {
                 className="my-4 text-black p-4 font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
                 type="button"
                 onClick={saveGenre}
+                disabled={inputs?.genre ? false : true}
               >
-                Save Data
+                {genreButton}
               </button>
             </div>
           </div>

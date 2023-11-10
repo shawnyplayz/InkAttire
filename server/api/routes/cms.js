@@ -75,23 +75,6 @@ const deleteCarousel = async (req, res, next) => {
     } else {
       res.status(401).send({ message: result.result });
     }
-    // const getOne = await cms.find({ carousel: {
-    //   $elemMatch: {
-    //     img_id: req.params.id
-    //   }
-    // }},{
-    //   "carousel.$": 1
-    // });
-    // if (!getOne || getOne.length === 0) {
-    //   res.status(500).json({ message: "Product Dosen't Exist" });
-    // } else {
-    //   await cms.updateOne({$pull:{
-    //     "carousel":{
-    //       img_id:req.params.id
-    //     }
-    //   }})
-    //   res.status(200).send({ message: "Deleted Successfully!" });
-    // }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
