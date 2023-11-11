@@ -80,6 +80,10 @@ const deleteCarousel = async (req, res, next) => {
   }
   next();
 };
+// const getCategories = async(req,res)=>{
+//   let asd = await
+
+// }
 module.exports = {
   getCarousel,
   postCarousel,

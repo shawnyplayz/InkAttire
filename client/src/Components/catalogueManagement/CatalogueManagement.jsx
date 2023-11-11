@@ -44,6 +44,7 @@ function CatalogueManagement() {
           text: result?.message,
           icon: "success",
           confirmButtonText: "Great!",
+          allowOutsideClick: false,
         }).then(() => {
           setInputs({ ...inputs, clothingType: null });
           callCatalogue();
@@ -59,6 +60,7 @@ function CatalogueManagement() {
           text: result?.message,
           icon: "success",
           confirmButtonText: "Great!",
+          allowOutsideClick: false,
         }).then(() => {
           setInputs({ ...inputs, clothingType: null });
           callCatalogue();
@@ -77,6 +79,7 @@ function CatalogueManagement() {
           text: result?.message,
           icon: "success",
           confirmButtonText: "Great!",
+          allowOutsideClick: false,
         }).then(() => {
           setInputs({ ...inputs, genre: null });
           callCatalogue();
@@ -92,6 +95,7 @@ function CatalogueManagement() {
           text: result?.message,
           icon: "success",
           confirmButtonText: "Great!",
+          allowOutsideClick: false,
         }).then(() => {
           setInputs({ ...inputs, genre: null });
           callCatalogue();
@@ -136,16 +140,6 @@ function CatalogueManagement() {
                   label: inputs?.clothingType,
                   value: inputs?.clothingType,
                 }}
-                // isOptionDisabled={(option) => {
-                //   let asd;
-                //   clothingOptions?.forEach((element) => {
-                //     if (element.value === option.value)
-                //       return (asd = element.value);
-                //   });
-                //   if (option.value == asd) {
-                //     return true;
-                //   }
-                // }}
               />
             </div>
             <div className="acitonButtons w-full flex justify-center">
@@ -183,16 +177,6 @@ function CatalogueManagement() {
                 isClearable
                 options={genreOptions}
                 isSearchable
-                // isOptionDisabled={(option) => {
-                //   let asd;
-                //   genreOptions.forEach((element) => {
-                //     if (element.value === option.value)
-                //       return (asd = element.value);
-                //   });
-                //   if (option.value == asd) {
-                //     return true;
-                //   }
-                // }}
                 value={{ label: inputs?.genre, value: inputs?.genre }}
               />
             </div>

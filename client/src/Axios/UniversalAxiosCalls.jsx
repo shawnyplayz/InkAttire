@@ -33,12 +33,12 @@ export let postAxiosCall = async (endpoint, data) => {
       text: error?.response?.data?.message,
       icon: "error",
       confirmButtonText: "Alright!",
+      allowOutsideClick: false,
     });
     return;
   }
 };
 export let getAxiosCall = async (endpoint, data) => {
-  
   try {
     store.dispatch({ type: "LOADING", payload: true });
     let res = null;
@@ -64,6 +64,7 @@ export let getAxiosCall = async (endpoint, data) => {
           text: error?.response?.data?.message,
           icon: "error",
           confirmButtonText: "Alright!",
+          allowOutsideClick: false,
         });
       });
     store.dispatch({ type: "LOADING", payload: false });
@@ -76,6 +77,7 @@ export let getAxiosCall = async (endpoint, data) => {
       text: error,
       icon: "error",
       confirmButtonText: "Alright!",
+      allowOutsideClick: false,
     });
   }
 };
@@ -107,6 +109,7 @@ export let deleteAxiosCall = async (endpoint, data) => {
           text: error?.response?.data?.message,
           icon: "error",
           confirmButtonText: "Alright!",
+          allowOutsideClick: false,
         });
       });
     store.dispatch({ type: "LOADING", payload: false });
@@ -119,6 +122,7 @@ export let deleteAxiosCall = async (endpoint, data) => {
       text: error,
       icon: "error",
       confirmButtonText: "Alright!",
+      allowOutsideClick: false,
     });
   }
 };
@@ -152,6 +156,7 @@ export let updateAxiosCall = async (endpoint, id, data) => {
       text: error?.response?.data?.message,
       icon: "error",
       confirmButtonText: "Alright!",
+      allowOutsideClick: false,
     });
     return;
   }

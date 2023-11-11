@@ -56,7 +56,7 @@ router.post("/", async (req, res, next) => {
   const uploadPromises = req.body.productImages?.map((base64Data) => {
     // Upload each image to Cloudinary
     return cloudinary.uploader.upload(base64Data, {
-      folder: 'productImages', // Specify the folder for uploaded images
+      folder: "productImages", // Specify the folder for uploaded images
     });
   });
 
@@ -75,10 +75,10 @@ router.post("/", async (req, res, next) => {
     quantity: req.body.quantity,
     size: req.body.size,
     description: req.body.description,
-    // productImages: req.body.productImages,
     productImages: uploadedImages,
     clothingType: req.body.clothingType,
     genre: req.body.genre,
+    skinShade: req.body.skinShade,
   });
   const querySku = await products.findOne({ sku: createProd.sku });
   "querySku==>", querySku;
@@ -101,20 +101,19 @@ router.put("/:id", async (req, res, next) => {
     if (req.body.sku != null) {
       const uploadPromises = req.body.productImages?.map((base64Data) => {
         //Check if the Image is Base64(String format), Only then hit the API..
-        if(typeof(base64Data) === 'string'){
- // Upload each image to Cloudinary
- return cloudinary.uploader.upload(base64Data, {
-  folder: 'productImages', // Specify the folder for uploaded images
-});
-        }
-        else{
+        if (typeof base64Data === "string") {
+          // Upload each image to Cloudinary
+          return cloudinary.uploader.upload(base64Data, {
+            folder: "productImages", // Specify the folder for uploaded images
+          });
+        } else {
           return base64Data;
         }
       });
-    
+
       const uploadedImages = await Promise.all(uploadPromises);
       req.body.productImages = uploadedImages;
-      console.log('req.body :>> ', req.body);
+      console.log("req.body :>> ", req.body);
       await products.updateOne({ sku: req.params.id }, req.body).then(() => {
         return res.status(201).json({
           message: "Updated Successfully!",

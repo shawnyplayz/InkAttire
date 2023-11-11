@@ -58,23 +58,23 @@ const productsSchema = new mongoose.Schema({
     type: Array,
     required: true,
   },
-  sales:{
-    type:Number,
-    require:false,
-    default : 0
+  sales: {
+    type: Number,
+    require: false,
+    default: 0,
   },
-  reviews:{
-    type:Array,
-    require:false,
+  reviews: {
+    type: Array,
+    require: false,
   },
-  ratings:{
-    type:Number,
-    require:false
+  ratings: {
+    type: Number,
+    require: false,
   },
-  skinShade:{
-    type:String,
-    require:true
-  }
+  skinShade: {
+    type: String,
+    require: true,
+  },
 });
 
 module.exports = mongoose.model("products", productsSchema);

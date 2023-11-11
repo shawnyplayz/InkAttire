@@ -16,7 +16,6 @@ import {
   Switch,
   TreeSelect,
   Upload,
-  
 } from "antd";
 import {
   deleteAxiosCall,
@@ -55,7 +54,7 @@ function GlobalForm(props) {
     {
       value: "Dark",
       label: "Dark Skin",
-    }
+    },
   ];
   const [inputs, setInputs] = useState({});
   const [imageClone, setImageClone] = useState(props?.record?.productImages);
@@ -159,6 +158,7 @@ function GlobalForm(props) {
         text: "Images Required",
         icon: "error",
         confirmButtonText: "Alright!",
+        allowOutsideClick: false,
       });
       return;
     }
@@ -168,22 +168,26 @@ function GlobalForm(props) {
         text: "Please Upload Images",
         icon: "error",
         confirmButtonText: "ok",
+        allowOutsideClick: false,
+        allowOutsideClick: false,
       });
       return;
     }
     try {
-      
       const answer = await postAxiosCall("/products", inputs);
-
       if (answer) {
         Swal.fire({
           title: "Success",
           text: answer?.message,
           icon: "success",
           confirmButtonText: "Great!",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setInputs();
+            window.location.reload();
+          }
         });
-        setInputs();
-        window.location.reload();
       }
     } catch (error) {
       Swal.fire({
@@ -191,6 +195,7 @@ function GlobalForm(props) {
         text: error,
         icon: "error",
         confirmButtonText: "Alright!",
+        allowOutsideClick: false,
       });
     }
   };
@@ -202,6 +207,7 @@ function GlobalForm(props) {
         text: answer?.message,
         icon: "success",
         confirmButtonText: "Great!",
+        allowOutsideClick: false,
       });
       setInputs();
       NavigateTo("/deleteproduct");
@@ -218,6 +224,7 @@ function GlobalForm(props) {
         text: "Images Required",
         icon: "error",
         confirmButtonText: "Alright!",
+        allowOutsideClick: false,
       });
       return;
     }
@@ -230,6 +237,7 @@ function GlobalForm(props) {
         text: answer?.message,
         icon: "success",
         confirmButtonText: "Great!",
+        allowOutsideClick: false,
       });
       setInputs();
       NavigateTo("/updateproduct");
@@ -242,7 +250,7 @@ function GlobalForm(props) {
           typeof inputs[key] === "number" &&
           inputs[key] === 0 &&
           key != "discount_percent" &&
-          key !="sales" &&
+          key != "sales" &&
           key != "__v"
         ) {
           // const el = inputs[key];
@@ -251,6 +259,7 @@ function GlobalForm(props) {
             text: `${key} can not be zero`,
             icon: "error",
             confirmButtonText: "OK",
+            allowOutsideClick: false,
           });
           return;
         }
@@ -258,22 +267,25 @@ function GlobalForm(props) {
     }
     switch (props.pageMode) {
       case "Add":
-        
         if (!inputs.hasOwnProperty("size")) {
           Swal.fire({
             title: "Error",
             text: "Please select a size",
             icon: "error",
             confirmButtonText: "ok",
+            allowOutsideClick: false,
           });
           return;
         }
-        if(!inputs.hasOwnProperty("skinShade")){
+        debugger;
+        if (!inputs.hasOwnProperty("skinShade")) {
+          debugger;
           Swal.fire({
             title: "Error",
             text: "Please select a Skin Colour",
             icon: "error",
             confirmButtonText: "ok",
+            allowOutsideClick: false,
           });
           return;
         }
@@ -284,6 +296,7 @@ function GlobalForm(props) {
           icon: "info",
           confirmButtonText: "Confirm",
           showCancelButton: true,
+          allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
             submit();
@@ -297,6 +310,7 @@ function GlobalForm(props) {
           icon: "info",
           confirmButtonText: "Delete",
           showCancelButton: true,
+          allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
             remove();
@@ -311,6 +325,7 @@ function GlobalForm(props) {
           icon: "info",
           confirmButtonText: "Confirm",
           showCancelButton: true,
+          allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
             update();
@@ -333,6 +348,7 @@ function GlobalForm(props) {
       icon: "info",
       confirmButtonText: "Delete",
       showCancelButton: true,
+      allowOutsideClick: false,
     }).then((result) => {
       if (result.isConfirmed) {
         deleteImage(index);
@@ -802,7 +818,11 @@ function GlobalForm(props) {
                   {imageClone?.map((el, index) => (
                     <div className="card" key={index}>
                       <div className="flex h-60 justify-center">
-                        <img src={el?.url} alt="asd4e" className="object-contain" />
+                        <img
+                          src={el?.url}
+                          alt="asd4e"
+                          className="object-contain"
+                        />
                       </div>
                       {props.pageMode !== "View" &&
                       props.pageMode !== "Delete" ? (

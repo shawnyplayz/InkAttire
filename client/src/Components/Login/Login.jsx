@@ -42,6 +42,7 @@ function Login(props) {
         text: error,
         icon: "error",
         confirmButtonText: "Alright!",
+        allowOutsideClick: false,
       });
     }
   };
