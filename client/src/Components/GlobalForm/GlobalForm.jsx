@@ -277,9 +277,8 @@ function GlobalForm(props) {
           });
           return;
         }
-        debugger;
+
         if (!inputs.hasOwnProperty("skinShade")) {
-          debugger;
           Swal.fire({
             title: "Error",
             text: "Please select a Skin Colour",
