@@ -169,7 +169,6 @@ function GlobalForm(props) {
         icon: "error",
         confirmButtonText: "ok",
         allowOutsideClick: false,
-        allowOutsideClick: false,
       });
       return;
     }
