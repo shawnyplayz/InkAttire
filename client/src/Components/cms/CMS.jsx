@@ -8,7 +8,6 @@ import {
   getAxiosCall,
   postAxiosCall,
 } from "../../Axios/UniversalAxiosCalls";
-import { v4 as uuidv4 } from "uuid";
 
 function CMS() {
   const [imageArray, setImageArray] = useState([]);
@@ -102,7 +101,6 @@ function CMS() {
         let asd;
         for (let i = 0; i < catImage.length; i++) {
           const base64String = await getBase64(catImage[i]?.originFileObj);
-          // B64Array.push({img:base64String,img_id:uuidv4()});
           B64Array.push(base64String);
         }
         // let dummyObj = { catImages: [...B64Array] };
@@ -116,7 +114,6 @@ function CMS() {
         let asd;
         for (let i = 0; i < imageArray.length; i++) {
           const base64String = await getBase64(imageArray[i]?.originFileObj);
-          // B64Array.push({img:base64String,img_id:uuidv4()});
           B64Array.push(base64String);
         }
         let dummyObj = { carousel: [...B64Array] };
