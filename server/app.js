@@ -48,8 +48,9 @@ app.get("/check-auth", requireAuth, userRoutes.checkAuth);
 app.post("/logout", userRoutes.logout);
 app.get("/users", requireAuth, userRoutes.allUsers);
 app.get("/cms", cmsRoutes.getCarousel);
-app.post("/cms", requireAuth, cmsRoutes.postCarousel);
+app.post("/cms", requireAuth, cmsRoutes.postImages);
 app.post("/cms/delete", requireAuth, cmsRoutes.deleteCarousel);
 app.post("/cms/deleteCategory", requireAuth, cmsRoutes.deleteCategory);
-
+app.post("/cms/deleteProsImages", requireAuth, cmsRoutes.deleteProsImages);
+app.post("/cms/description", requireAuth, cmsRoutes.saveDescription);
 module.exports = app;

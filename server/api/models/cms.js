@@ -5,6 +5,10 @@ const cmsSchema = new mongoose.Schema({
     type: Object,
     require: false,
   },
+  pros: {
+    type: String,
+    require: false,
+  },
 });
 
 module.exports = mongoose.model("cms", cmsSchema);

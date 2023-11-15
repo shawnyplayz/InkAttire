@@ -8,13 +8,18 @@ import {
   getAxiosCall,
   postAxiosCall,
 } from "../../Axios/UniversalAxiosCalls";
+import TextArea from "antd/es/input/TextArea";
 
 function CMS() {
   const [imageArray, setImageArray] = useState([]);
   const [catImage, setCatImage] = useState([]);
+  const [prosPics, setProsPics] = useState([]);
+  const [fetchProsPics, setFetchProsPics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [inputs, setInputs] = useState({});
   const [categories, setCategories] = useState({});
+  const [pushProsImg, setPushProsImg] = useState({});
+  const [prosDescription, setProsDescription] = useState({});
   const [carouselImages, setCarouselImages] = useState(null);
   const [clothingOptions, setClothingOptions] = useState([]);
   const [categoriesImg, setCategoriesImg] = useState([]);
@@ -26,6 +31,8 @@ function CMS() {
     const getClothingOptions = await getAxiosCall("/catalogue");
     setCarouselImages(getImages?.data?.carousel);
     setCategoriesImg(getImages?.data?.categories);
+    setFetchProsPics(getImages?.data?.ProsPics);
+    setProsDescription({ description: getImages?.data?.pros[0]?.pros });
     let aggClothingOptions = getClothingOptions?.data?.clothingType.map(
       (el) => ({
         label: el.clothingType,
@@ -54,6 +61,26 @@ function CMS() {
         text: answer?.data?.message,
         icon: "success",
         confirmButtonText: "Great!",
+        allowOutsideClick: false,
+      });
+    }
+  };
+  const deleteProsImages = async (id) => {
+    const answer = await postAxiosCall("/cms/deleteProsImages", { id });
+    if (answer) {
+      Swal.fire({
+        title: "Success",
+        text: answer?.data?.message,
+        icon: "success",
+        confirmButtonText: "Great!",
+        allowOutsideClick: false,
+      });
+    } else {
+      Swal.fire({
+        title: "error",
+        text: answer?.data?.message,
+        icon: "error",
+        confirmButtonText: "Ok",
         allowOutsideClick: false,
       });
     }
@@ -95,7 +122,18 @@ function CMS() {
       reader.onerror = (error) => reject(error);
     });
   const convertAllToBase64 = async (toggleCategories) => {
-    if (toggleCategories) {
+    if (toggleCategories === "pros") {
+      if (prosPics.length != 0) {
+        let B64Array = [];
+        let asd;
+        for (let i = 0; i < prosPics.length; i++) {
+          const base64String = await getBase64(prosPics[i]?.originFileObj);
+          B64Array.push(base64String);
+        }
+        asd = Object.assign(pushProsImg, { prosImages: [...B64Array] });
+        setPushProsImg({ ...pushProsImg, prosImages: [...B64Array] });
+      }
+    } else if (toggleCategories === "categories") {
       if (catImage.length != 0) {
         let B64Array = [];
         let asd;
@@ -122,8 +160,22 @@ function CMS() {
       }
     }
   };
-  const deleteModal = async (id, deleteCategories) => {
-    if (!deleteCategories) {
+  const deleteModal = async (id, deleteModuleImages) => {
+    if (deleteModuleImages === "prosImages") {
+      Swal.fire({
+        title: "info",
+        text: "Are You Sure You want to Delete This Picture",
+        icon: "info",
+        confirmButtonText: "Delete",
+        showCancelButton: true,
+        allowOutsideClick: false,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          await deleteProsImages(id);
+          fetchCarousel();
+        }
+      });
+    } else if (deleteModuleImages === "carousel") {
       Swal.fire({
         title: "info",
         text: "Are You Sure You want to Delete This Picture",
@@ -164,7 +216,7 @@ function CMS() {
       });
       return;
     }
-    await convertAllToBase64(true);
+    await convertAllToBase64("categories");
     console.log("categories", categories);
 
     try {
@@ -179,6 +231,61 @@ function CMS() {
         }).then((result) => {
           if (result.isConfirmed) {
             setCategories();
+            window.location.reload();
+          }
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "error",
+        text: error,
+        icon: "error",
+        confirmButtonText: "Alright!",
+        allowOutsideClick: false,
+      });
+    }
+  };
+  const submitProsImgs = async () => {
+    await convertAllToBase64("pros");
+    console.log("pushProsImg", pushProsImg);
+    try {
+      const answer = await postAxiosCall("/cms", pushProsImg);
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setPushProsImg();
+            window.location.reload();
+          }
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "error",
+        text: error,
+        icon: "error",
+        confirmButtonText: "Alright!",
+        allowOutsideClick: false,
+      });
+    }
+  };
+  const submitProsDesc = async () => {
+    try {
+      const answer = await postAxiosCall("/cms/description", prosDescription);
+      if (answer) {
+        Swal.fire({
+          title: "Success",
+          text: answer?.message,
+          icon: "success",
+          confirmButtonText: "Great!",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
             window.location.reload();
           }
         });
@@ -254,7 +361,7 @@ function CMS() {
                   <div className="flex flex-row justify-center items-end">
                     <button
                       className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
-                      onClick={() => deleteModal(el?.public_id)}
+                      onClick={() => deleteModal(el?.public_id, "carousel")}
                       type="button"
                     >
                       Delete Picture
@@ -353,11 +460,116 @@ function CMS() {
                     <button
                       className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
                       onClick={() =>
-                        deleteModal(el?.categories?.public_id, true)
+                        deleteModal(el?.categories?.public_id, "categories")
                       }
                       type="button"
                     >
                       Delete a Category
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </PageWrapper>
+      <PageWrapper title="Pros of the Product">
+        <div className="container mx-auto p-4 text-xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="my-5 flex flex-row ">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Upload Pictures
+              </label>
+              <Upload
+                action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                // action="/upload.do"
+                listType="picture-card"
+                multiple={false}
+                name="productImages"
+                fileList={prosPics}
+                maxCount={4}
+                onChange={(e) => {
+                  setProsPics(e.fileList);
+                }}
+              >
+                <div>
+                  <PlusOutlined />
+                  <div
+                    style={{
+                      marginTop: 8,
+                    }}
+                  >
+                    Upload
+                  </div>
+                </div>
+              </Upload>
+            </div>
+            <div className="my-5 flex flex-row ">
+              <button
+                className="my-4 p-4 flex justify-center items-center text-black font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                onClick={submitProsImgs}
+                disabled={prosPics.length != 0 ? false : true}
+                type="button"
+              >
+                Add Image
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-col justify-evenly">
+            <div className="my-5 w-full">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <TextArea
+                required
+                type="text"
+                id="description"
+                name="description"
+                className="mt-1 p-2 block w-full border rounded-md !h-60"
+                onChange={(e) => {
+                  setProsDescription({
+                    ...prosDescription,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                value={prosDescription?.description}
+              />
+            </div>
+            <div className="my-5 flex flex-row justify-center ">
+              <button
+                className="my-4 p-4 flex justify-center items-center text-black font-semibold hover:bg-orange-400 hover:text-white rounded-lg bg-indigo-200"
+                onClick={submitProsDesc}
+                disabled={prosDescription?.description != "" ? false : true}
+                type="button"
+              >
+                Submit Description
+              </button>
+            </div>
+          </div>
+          <div className="flex flex-row justify-evenly">
+            {fetchProsPics?.map((el, index) => {
+              return (
+                <div className="card" key={index}>
+                  <div className="flex h-60 justify-center">
+                    <img
+                      src={el?.url}
+                      alt="Newly added"
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-row justify-center items-end">
+                    <button
+                      className="my-4 text-black p-4 font-semibold bg-orange-400 hover:text-white rounded-lg"
+                      onClick={() => deleteModal(el?.public_id, "prosImages")}
+                      type="button"
+                    >
+                      Delete Picture
                     </button>
                   </div>
                 </div>
