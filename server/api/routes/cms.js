@@ -21,8 +21,8 @@ const getCarousel = async (req, res) => {
     prefix: "prosImages",
   });
   try {
-    let getCar = await cms.find({}, { categories: 1 }, { __v: 0 }, { _id: 0 });
-    let fetchPros = await cms.find({}, { pros: 1 });
+    let getCar = await cms.find({ categories: { $exists: true } });
+    let fetchPros = await cms.find({ pros: { $exists: true } });
     res.status(200).json({
       carousel: [...result?.resources],
       featuredProducts: getFeatured,
@@ -179,8 +179,7 @@ const saveDescription = async (req, res, next) => {
     if (req.body.description === "") {
       return res.status(401).json({ message: "Description cannot be empty" });
     }
-    let asd = await cms.deleteMany({}, { pros: 1 });
-    console.log("asd", asd);
+    let asd = await cms.deleteMany({ pros: { $exists: true } });
     let saveDesc = new cms({
       pros: req.body.description,
     });
