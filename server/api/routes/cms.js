@@ -5,6 +5,21 @@ const products = require("../models/products");
 const cloudinary = require("../../utils/cloudinary");
 const { json } = require("body-parser");
 
+const bestSellers = async () => {
+  try {
+    let pwithSales = await products.find({ sales: { $gt: 0 } }).limit(10);
+    if (!pwithSales) {
+      return pwithSales;
+    } else {
+      return (pwithSales = await products
+        .find({ sales: { $exists: true } })
+        .limit(10));
+    }
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+};
+
 const getCarousel = async (req, res) => {
   var distinctValues = await products.distinct("genre");
   let getFeatured = await products.find({ genre: { $in: distinctValues } });
@@ -21,14 +36,16 @@ const getCarousel = async (req, res) => {
     prefix: "prosImages",
   });
   try {
+    let fetchBestSellers = await bestSellers();
     let getCar = await cms.find({ categories: { $exists: true } });
     let fetchPros = await cms.find({ pros: { $exists: true } });
     res.status(200).json({
       carousel: [...result?.resources],
       featuredProducts: getFeatured,
       categories: getCar ? [...getCar] : [],
-      ProsPics: resultPros?.resources,
+      prosPics: resultPros?.resources,
       pros: [...fetchPros],
+      bestSellers: [...fetchBestSellers],
     });
   } catch (error) {
     res.status(500).json({ message: error });

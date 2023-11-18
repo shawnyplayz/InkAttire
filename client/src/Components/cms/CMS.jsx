@@ -31,7 +31,7 @@ function CMS() {
     const getClothingOptions = await getAxiosCall("/catalogue");
     setCarouselImages(getImages?.data?.carousel);
     setCategoriesImg(getImages?.data?.categories);
-    setFetchProsPics(getImages?.data?.ProsPics);
+    setFetchProsPics(getImages?.data?.prosPics);
     setProsDescription({ description: getImages?.data?.pros[0]?.pros });
     let aggClothingOptions = getClothingOptions?.data?.clothingType.map(
       (el) => ({
