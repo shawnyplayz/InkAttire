@@ -26,8 +26,15 @@ const userRoutes = require("./api/routes/users");
 const cmsRoutes = require("./api/routes/cms");
 const catalogueRoutes = require("./api/routes/catalogue");
 const requireAuth = require("./api/middleware/requireAuth");
-
-app.use(cors());
+const options = {
+  credentials: true,
+  origin: [
+    "https://www.inklothes.innovativecursor.com",
+    "http://www.inklothes.innovativecursor.com",
+    "http://localhost:3000",
+  ],
+};
+app.use(cors(options));
 app.use(
   bodyParser.urlencoded({
     extended: false,
