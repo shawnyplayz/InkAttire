@@ -29,10 +29,10 @@ const requireAuth = require("./api/middleware/requireAuth");
 const options = {
   credentials: true,
   origin: [
-    "https://www.inklothes.innovativecursor.com",
-    "http://www.inklothes.innovativecursor.com",
     "http://localhost:3000",
     "http://localhost:3001",
+    "https://inklothes.com",
+    "https://admin.inklothes.com",
   ],
 };
 app.use(cors(options));
