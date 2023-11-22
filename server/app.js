@@ -15,10 +15,10 @@ mongoose.connect(process.env.CONNECTIONSTRING, { useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.on("error", (error) => {
-  "error==>", error;
+  console.log("error==>", error);
 });
 db.once("open", () => {
-  ("connected to database");
+  console.log("connected to database");
 });
 
 const productRoutes = require("./api/routes/products");
@@ -32,6 +32,7 @@ const options = {
     "https://www.inklothes.innovativecursor.com",
     "http://www.inklothes.innovativecursor.com",
     "http://localhost:3000",
+    "http://localhost:3001",
   ],
 };
 app.use(cors(options));

@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
+// import logo from "../../assets/Images/Groovy.svg";
+// import logo from "../../assets/Images/inklothes_logo_new.svg";
+import logo from "../../assets/Images/inc.svg";
+// import logo from "../../assets/Images/innocursor.svg";
 function Navbar(props) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -12,9 +16,11 @@ function Navbar(props) {
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           {/* Logo or Brand Name */}
-          <NavLink href="/" className="text-pink-200 text-3xl font-serif ">
-            Inklothes{" "}
-          </NavLink>
+          <div className="">
+            {/* <NavLink href="/" className="text-pink-200 text-3xl font-serif "> */}
+            <img src={logo} alt="inklothes_logo" className="h-10 w-16" />
+            {/* </NavLink> */}
+          </div>
 
           {/* Mobile Menu Button (Hamburger) */}
           <div className="md:hidden">

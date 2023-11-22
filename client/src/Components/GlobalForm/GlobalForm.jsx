@@ -276,11 +276,30 @@ function GlobalForm(props) {
           });
           return;
         }
-
         if (!inputs.hasOwnProperty("skinShade")) {
           Swal.fire({
             title: "Error",
             text: "Please select a Skin Colour",
+            icon: "error",
+            confirmButtonText: "ok",
+            allowOutsideClick: false,
+          });
+          return;
+        }
+        if (!inputs.hasOwnProperty("clothingType")) {
+          Swal.fire({
+            title: "Error",
+            text: "Please select a Clothing Type",
+            icon: "error",
+            confirmButtonText: "ok",
+            allowOutsideClick: false,
+          });
+          return;
+        }
+        if (!inputs.hasOwnProperty("genre")) {
+          Swal.fire({
+            title: "Error",
+            text: "Please select a Genre",
             icon: "error",
             confirmButtonText: "ok",
             allowOutsideClick: false,
@@ -435,60 +454,6 @@ function GlobalForm(props) {
                   value={inputs?.title}
                 />
               </div>
-              {/* <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Length in cms
-                </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  required
-                  type="number"
-                  id="Length"
-                  name="Length"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs?.Length}
-                />
-              </div> */}
-              {/* <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Width in inches
-                </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  required
-                  type="number"
-                  id="width"
-                  name="width"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs?.width}
-                />
-              </div> */}
               <div>
                 <label
                   htmlFor="name"
@@ -496,29 +461,32 @@ function GlobalForm(props) {
                 >
                   Type of Clothing
                 </label>
-                <Select
+                <select
                   required
-                  isClearable
-                  isMulti={false}
                   onChange={(e) => {
-                    setInputs(
-                      { ...inputs, clothingType: e.value },
-                      () => ("inputs==>", inputs)
-                    );
+                    setInputs({ ...inputs, clothingType: e.target.value });
                   }}
                   isDisabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
                   }
-                  options={clothingOptions}
-                  isSearchable
-                  styles={{ width: "100%" }}
-                  value={{
-                    label: inputs?.clothingType,
-                    value: inputs?.clothingType,
-                  }}
-                />
+                  size="large"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  name="clothingType"
+                  value={inputs?.clothingType}
+                >
+                  {clothingOptions?.map((el) => {
+                    return (
+                      <>
+                        <option value="" selected disabled hidden>
+                          Choose here
+                        </option>
+                        <option value={el.value}>{el.label}</option>
+                      </>
+                    );
+                  })}
+                </select>
               </div>
               <div>
                 <label
@@ -527,23 +495,33 @@ function GlobalForm(props) {
                 >
                   Genre
                 </label>
-                <Select
+                <select
                   placeholder="The Theme of the Tattoo"
                   required
-                  isMulti={false}
                   onChange={(e) => {
-                    setInputs({ ...inputs, genre: e.value });
+                    setInputs({ ...inputs, genre: e.target.value });
                   }}
                   isDisabled={
                     props?.pageMode === "Delete" || props?.pageMode === "View"
                       ? true
                       : false
                   }
-                  isClearable
-                  options={genreOptions}
-                  isSearchable
-                  value={{ label: inputs?.genre, value: inputs?.genre }}
-                />
+                  size="large"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                  name="genre"
+                  value={inputs?.genre}
+                >
+                  {genreOptions?.map((el) => {
+                    return (
+                      <>
+                        <option value="" selected disabled hidden>
+                          Choose here
+                        </option>
+                        <option value={el.value}>{el.label}</option>
+                      </>
+                    );
+                  })}
+                </select>
               </div>
 
               <div>
