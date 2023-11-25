@@ -20,16 +20,18 @@ const bestSellers = async () => {
   }
 };
 
-const getCarousel = async (req, res) => {
-  var distinctValues = await products.distinct("genre");
-  let getFeatured = await products.find({ genre: { $in: distinctValues } });
+const getAll = async (req, res) => {
+  var distinctGenre = await products.aggregate([
+    { $group: { _id: "$genre", documents: { $addToSet: "$$ROOT" } } },
+    { $replaceRoot: { newRoot: { $arrayElemAt: ["$documents", 0] } } },
+  ]);
+  var distinctSkinShade = await products.aggregate([
+    { $unwind: "$skinShade" },
+    { $group: { _id: "$skinShade" } },
+  ]);
   const result = await cloudinary.api.resources({
     type: "upload",
     prefix: "carousel",
-  });
-  const resultCategories = await cloudinary.api.resources({
-    type: "upload",
-    prefix: "categories",
   });
   const resultPros = await cloudinary.api.resources({
     type: "upload",
@@ -38,20 +40,36 @@ const getCarousel = async (req, res) => {
   try {
     let fetchBestSellers = await bestSellers();
     let getCar = await cms.find({ categories: { $exists: true } });
+    let cato = getCar?.map((el) => {
+      return el?.categories?.clothingType;
+    });
+    let themes = await products.find(
+      { genre: { $in: distinctValues } },
+      { _id: 0, genre: 1 }
+    );
     let fetchPros = await cms.find({ pros: { $exists: true } });
     res.status(200).json({
       carousel: [...result?.resources],
-      featuredProducts: getFeatured,
+      featuredProducts:
+        // getFeatured
+        distinctGenre,
       categories: getCar ? [...getCar] : [],
       prosPics: resultPros?.resources,
       pros: [...fetchPros],
       bestSellers: [...fetchBestSellers],
+      navbarCategories: {
+        categories: [...cato],
+        theme: [...themes],
+        skinTone: [...distinctSkinShade],
+      },
     });
   } catch (error) {
     res.status(500).json({ message: error });
   }
 };
-
+// const getCategories = async (req,res)=>{
+//   let getMostCategories = await products.find()
+// }
 const postImages = async (req, res) => {
   try {
     if (req.body.hasOwnProperty("prosImages")) {
@@ -214,7 +232,7 @@ const saveDescription = async (req, res, next) => {
   }
 };
 module.exports = {
-  getCarousel,
+  getAll,
   postImages,
   deleteCarousel,
   deleteCategory,

@@ -55,7 +55,7 @@ app.post("/login", userRoutes.login);
 app.get("/check-auth", requireAuth, userRoutes.checkAuth);
 app.post("/logout", userRoutes.logout);
 app.get("/users", requireAuth, userRoutes.allUsers);
-app.get("/cms", cmsRoutes.getCarousel);
+app.get("/cms", cmsRoutes.getAll);
 app.post("/cms", requireAuth, cmsRoutes.postImages);
 app.post("/cms/delete", requireAuth, cmsRoutes.deleteCarousel);
 app.post("/cms/deleteCategory", requireAuth, cmsRoutes.deleteCategory);
