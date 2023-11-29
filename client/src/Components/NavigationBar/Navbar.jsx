@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 // import logo from "../../assets/Images/Groovy.svg";
 // import logo from "../../assets/Images/inklothes_logo_new.svg";
-import logo from "../../assets/Images/inc.svg";
+import logo from "../../assets/Images/inklothes.svg";
 // import logo from "../../assets/Images/innocursor.svg";
 function Navbar(props) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,9 +17,24 @@ function Navbar(props) {
         <div className="flex justify-between items-center">
           {/* Logo or Brand Name */}
           <div className="">
-            {/* <NavLink href="/" className="text-pink-200 text-3xl font-serif "> */}
-            <img src={logo} alt="inklothes_logo" className="h-10 w-16" />
-            {/* </NavLink> */}
+            <NavLink href="/" className="text-pink-200 text-3xl font-serif ">
+              <img
+                src={logo}
+                className="h-fit"
+                alt="logo"
+                loading="eager"
+                priority={true}
+                style={{
+                  height: "70px",
+                  verticalAlign: "middle",
+                  width: "147px",
+                  transform: "scale(6.5)",
+                }}
+              />
+              {/* <span className="self-center text-3xl font-bold whitespace-nowrap">
+              {Essentials.name}
+            </span> */}
+            </NavLink>
           </div>
 
           {/* Mobile Menu Button (Hamburger) */}

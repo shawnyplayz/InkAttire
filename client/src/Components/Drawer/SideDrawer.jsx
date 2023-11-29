@@ -28,8 +28,12 @@ const menu = [
     link: "/viewusers",
   },
   {
-    text: "Carousel Management System",
+    text: "Home Page Editor",
     link: "/cms",
+  },
+  {
+    text: "Categories page Editor",
+    link: "/categories",
   },
 ];
 function SideDrawer() {

@@ -25,6 +25,8 @@ const productRoutes = require("./api/routes/products");
 const userRoutes = require("./api/routes/users");
 const cmsRoutes = require("./api/routes/cms");
 const catalogueRoutes = require("./api/routes/catalogue");
+const categoriesRoutes = require("./api/routes/categories");
+const navbarRoutes = require("./api/routes/navbar");
 const requireAuth = require("./api/middleware/requireAuth");
 const options = {
   credentials: true,
@@ -61,4 +63,7 @@ app.post("/cms/delete", requireAuth, cmsRoutes.deleteCarousel);
 app.post("/cms/deleteCategory", requireAuth, cmsRoutes.deleteCategory);
 app.post("/cms/deleteProsImages", requireAuth, cmsRoutes.deleteProsImages);
 app.post("/cms/description", requireAuth, cmsRoutes.saveDescription);
+app.get("/navbarContent", navbarRoutes.getNavContent);
+app.get("/categoriesImg", categoriesRoutes.getCategoryPageImg);
+app.post("/categoriesImg", requireAuth, categoriesRoutes.postImages);
 module.exports = app;

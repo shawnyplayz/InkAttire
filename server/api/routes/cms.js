@@ -21,6 +21,7 @@ const bestSellers = async () => {
 };
 
 const getAll = async (req, res) => {
+  var distinctValues = await products.distinct("genre");
   var distinctGenre = await products.aggregate([
     { $group: { _id: "$genre", documents: { $addToSet: "$$ROOT" } } },
     { $replaceRoot: { newRoot: { $arrayElemAt: ["$documents", 0] } } },
@@ -145,12 +146,11 @@ const postImages = async (req, res) => {
         });
     }
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ message: error?.error?.message });
   }
 };
 const deleteCarousel = async (req, res, next) => {
   try {
-    console.log("req.params.id", req.body.id);
     const result = await cloudinary.uploader.destroy(
       req.body.id,
       function (result) {

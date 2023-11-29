@@ -21,6 +21,7 @@ import UpdateInner from "../Components/updateProd/UpdateInner";
 import Robots from "../Components/Robots/Robots";
 import CatalogueManagement from "../Components/catalogueManagement/CatalogueManagement";
 import CMS from "../Components/cms/CMS";
+import Categories from "../Categories/Categories";
 
 function Navigation(props) {
   const location = useLocation();
@@ -72,6 +73,7 @@ function Navigation(props) {
               />
               <Route path="/updateinner" element={<UpdateInner />} />
               <Route path="/cms" element={<CMS />} />
+              <Route path="/categories" element={<Categories />} />
             </Route>
             <Route path="*" element={<Robots />} />
           </Routes>

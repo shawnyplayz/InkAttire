@@ -155,8 +155,8 @@ function CMS() {
           const base64String = await getBase64(imageArray[i]?.originFileObj);
           B64Array.push(base64String);
         }
-        let dummyObj = { carousel: [...B64Array] };
-        asd = Object.assign(inputs, { carousel: dummyObj?.carousel });
+        // let dummyObj = { carousel: [...B64Array] };
+        asd = Object.assign(inputs, { carousel: [...B64Array] });
         setInputs({ ...inputs, carousel: asd });
       }
     }
