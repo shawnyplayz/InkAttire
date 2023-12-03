@@ -60,6 +60,7 @@ function GlobalForm(props) {
   const [imageClone, setImageClone] = useState(props?.record?.productImages);
   const [clothingOptions, setClothingOptions] = useState(null);
   const [genreOptions, setGenreOptions] = useState(null);
+  const [clothingFit, setClothingFit] = useState(null);
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const priceRef = useRef();
@@ -97,6 +98,7 @@ function GlobalForm(props) {
     const getOptions = await getAxiosCall("/catalogue");
     let clothingOptions = getOptions?.data?.clothingType;
     let genreOptions = getOptions?.data?.genre;
+    let cg = getOptions?.data?.cg;
     if (clothingOptions) {
       const collectClothing = clothingOptions?.map((el) => ({
         label: el.clothingType,
@@ -106,8 +108,13 @@ function GlobalForm(props) {
         label: el.genre,
         value: el.genre,
       }));
+      const clothingFit = cg?.map((el) => ({
+        label: el,
+        value: el,
+      }));
       setClothingOptions(collectClothing);
       setGenreOptions(collectGenre);
+      setClothingFit(clothingFit);
     }
   };
   const getBase64 = (file) =>
@@ -300,6 +307,16 @@ function GlobalForm(props) {
           Swal.fire({
             title: "Error",
             text: "Please select a Genre",
+            icon: "error",
+            confirmButtonText: "ok",
+            allowOutsideClick: false,
+          });
+          return;
+        }
+        if (!inputs.hasOwnProperty("clothingFit")) {
+          Swal.fire({
+            title: "Error",
+            text: "Please select a Clothing fit",
             icon: "error",
             confirmButtonText: "ok",
             allowOutsideClick: false,
@@ -700,6 +717,40 @@ function GlobalForm(props) {
                   className="mt-1 p-2 block w-full border rounded-md"
                 >
                   {shadeOpt?.map((el) => {
+                    return (
+                      <>
+                        <option value="" selected disabled hidden>
+                          Choose here
+                        </option>
+                        <option value={el.value}>{el.label}</option>
+                      </>
+                    );
+                  })}
+                </select>
+              </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Select Clothing Fit
+                </label>
+                <select
+                  disabled={
+                    props?.pageMode === "Delete" || props?.pageMode === "View"
+                      ? true
+                      : false
+                  }
+                  required
+                  value={inputs?.clothingFit}
+                  onChange={(e) => {
+                    setInputs({ ...inputs, clothingFit: e.target.value });
+                  }}
+                  name="clothingFit"
+                  size="large"
+                  className="mt-1 p-2 block w-full border rounded-md"
+                >
+                  {clothingFit?.map((el) => {
                     return (
                       <>
                         <option value="" selected disabled hidden>

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const catalogue = require("../models/catalogue");
 const products = require("../models/products");
-
+const cg = ["Unisex", "Men", "Women", "Kids"];
 router.get("/", async (req, res) => {
   try {
     let getCata = await catalogue.find({});
@@ -23,12 +23,19 @@ router.get("/", async (req, res) => {
           };
         }
       });
-
-      getCata = { clothingType, genre };
+      // const cg = getCata?.filter((el) => {
+      //   if (el.cg !== undefined || !el) {
+      //     return {
+      //       label: el.cg,
+      //       value: el.cg,
+      //     };
+      //   }
+      // });
+      getCata = { clothingType, genre, cg };
     }
     res.status(200).json(getCata);
   } catch (error) {
-    res.status(500).json({ message: error });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -36,8 +43,9 @@ router.post("/", async (req, res) => {
   const createCata = new catalogue({
     clothingType: req.body?.clothingType,
     genre: req.body?.genre,
+    cg: req.body?.cg,
   });
-  if (!createCata?.clothingType && !createCata?.genre) {
+  if (!createCata?.clothingType && !createCata?.genre && !createCata.cg) {
     res.status(500).json({ message: "Fields cannot be empty" });
   } else if (createCata.clothingType) {
     const clothingType = await catalogue.findOne({
@@ -48,7 +56,6 @@ router.post("/", async (req, res) => {
       res.status(500).json({ message: "This Clothing Type already exists" });
     } else {
       try {
-        ("Saving Product");
         await createCata.save();
         res.status(201).json({ message: "Successfully Added a Clothing" });
       } catch (error) {
@@ -69,6 +76,7 @@ router.post("/", async (req, res) => {
     }
   }
 });
+
 router.post("/deleteClothing/", async (req, res) => {
   try {
     if (req.body.clothingType) {
