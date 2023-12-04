@@ -23,14 +23,6 @@ router.get("/", async (req, res) => {
           };
         }
       });
-      // const cg = getCata?.filter((el) => {
-      //   if (el.cg !== undefined || !el) {
-      //     return {
-      //       label: el.cg,
-      //       value: el.cg,
-      //     };
-      //   }
-      // });
       getCata = { clothingType, genre, cg };
     }
     res.status(200).json(getCata);

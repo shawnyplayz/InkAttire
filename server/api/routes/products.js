@@ -34,69 +34,71 @@ const upload = multer({
 });
 
 // Getting All
-router.get("/", async (req, res, next) => {
+const getAllProducts = async (req, res, next) => {
   try {
     const prod = await products.find();
     res.json(prod);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-});
+};
 // Getting One
-router.get("/:id", async (req, res, next) => {
+const getProduct = async (req, res, next) => {
   try {
-    const getOne = await products.findOne({ sku: req.params.id });
+    const getOne = await products.findOne({ sku: req.body.sku });
     res.json(getOne);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-});
+};
 //Creating One
-router.post("/", async (req, res, next) => {
-  const uploadPromises = req.body.productImages?.map((base64Data) => {
-    // Upload each image to Cloudinary
-    return cloudinary.uploader.upload(base64Data, {
-      folder: "productImages", // Specify the folder for uploaded images
+const createProduct =
+  ("/",
+  async (req, res, next) => {
+    const uploadPromises = req.body.productImages?.map((base64Data) => {
+      // Upload each image to Cloudinary
+      return cloudinary.uploader.upload(base64Data, {
+        folder: "productImages", // Specify the folder for uploaded images
+      });
     });
-  });
 
-  const uploadedImages = await Promise.all(uploadPromises);
+    const uploadedImages = await Promise.all(uploadPromises);
 
-  const createProd = new products({
-    sku: req.body.sku,
-    name: req.body.name,
-    title: req.body.title,
-    Length: req.body.Length,
-    width: req.body.width,
-    price: req.body.price,
-    totalPrice: req.body.totalPrice,
-    discount_percent: req.body.discount_percent,
-    savings: req.body.savings,
-    quantity: req.body.quantity,
-    size: req.body.size,
-    description: req.body.description,
-    productImages: uploadedImages,
-    clothingType: req.body.clothingType,
-    genre: req.body.genre,
-    skinShade: req.body.skinShade,
-  });
-  const querySku = await products.findOne({ sku: createProd.sku });
-  "querySku==>", querySku;
-  if (createProd.sku === querySku?.sku) {
-    ("SKU name already EXISTS");
-    res.status(500).json({ message: "SKU name already exists" });
-    return;
-  } else {
-    try {
-      await createProd.save();
-      res.status(201).json({ message: "Successfully Added a Product" });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
+    const createProd = new products({
+      sku: req.body.sku,
+      name: req.body.name,
+      title: req.body.title,
+      Length: req.body.Length,
+      width: req.body.width,
+      price: req.body.price,
+      totalPrice: req.body.totalPrice,
+      discount_percent: req.body.discount_percent,
+      savings: req.body.savings,
+      quantity: req.body.quantity,
+      size: req.body.size,
+      description: req.body.description,
+      productImages: uploadedImages,
+      clothingType: req.body.clothingType,
+      genre: req.body.genre,
+      skinShade: req.body.skinShade,
+    });
+    const querySku = await products.findOne({ sku: createProd.sku });
+    "querySku==>", querySku;
+    if (createProd.sku === querySku?.sku) {
+      ("SKU name already EXISTS");
+      res.status(500).json({ message: "SKU name already exists" });
+      return;
+    } else {
+      try {
+        await createProd.save();
+        res.status(201).json({ message: "Successfully Added a Product" });
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+      }
     }
-  }
-});
+  });
 //Updating One
-router.put("/:id", async (req, res, next) => {
+const updateProduct = async (req, res, next) => {
   try {
     if (req.body.sku != null) {
       const uploadPromises = req.body.productImages?.map((base64Data) => {
@@ -114,7 +116,7 @@ router.put("/:id", async (req, res, next) => {
       const uploadedImages = await Promise.all(uploadPromises);
       req.body.productImages = uploadedImages;
       console.log("req.body :>> ", req.body);
-      await products.updateOne({ sku: req.params.id }, req.body).then(() => {
+      await products.updateOne({ _id: req.body._id }, req.body).then(() => {
         return res.status(201).json({
           message: "Updated Successfully!",
         });
@@ -126,20 +128,26 @@ router.put("/:id", async (req, res, next) => {
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
-});
+};
 // Deleting One
-router.delete("/:id", async (req, res, next) => {
+const deleteProduct = async (req, res, next) => {
   try {
-    const getOne = await products.findOne({ _id: req.params.id });
+    const getOne = await products.findOne({ _id: req.body._id });
     if (!getOne) {
       res.status(500).json({ message: "Product Dosen't Exist" });
     } else {
-      await products.deleteOne({ _id: req.params.id });
+      await products.deleteOne({ _id: req.body._id });
       res.status(200).send({ message: "Deleted Successfully!" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
   next();
-});
-module.exports = router;
+};
+module.exports = {
+  getAllProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};

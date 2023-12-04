@@ -145,7 +145,7 @@ export let updateAxiosCall = async (endpoint, id, data) => {
 
     // Make the request using the provided body and endpoint
     const endP = `${endpoint}/${id}`;
-    const response = await instance.put(endP, data);
+    const response = await instance.post(endP, data);
     // Return the response
     store.dispatch({ type: "LOADING", payload: false });
     return response.data;

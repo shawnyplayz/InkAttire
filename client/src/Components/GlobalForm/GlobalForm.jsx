@@ -126,10 +126,10 @@ function GlobalForm(props) {
     });
   const convertAllToBase64 = async () => {
     if (props.pageMode === "Add") {
-      if (imageArray.length != 0) {
+      if (imageArray?.length != 0) {
         let B64Array = [];
         let asd;
-        for (let i = 0; i < imageArray.length; i++) {
+        for (let i = 0; i < imageArray?.length; i++) {
           const base64String = await getBase64(imageArray[i]?.originFileObj);
           B64Array.push(base64String);
         }
@@ -138,7 +138,7 @@ function GlobalForm(props) {
         setInputs({ ...inputs, productImages: asd });
       }
     } else {
-      if (imageArray.length != 0) {
+      if (imageArray?.length != 0) {
         let B64Array = [];
         let asd;
         for (let i = 0; i < imageArray.length; i++) {
@@ -180,7 +180,7 @@ function GlobalForm(props) {
       return;
     }
     try {
-      const answer = await postAxiosCall("/products", inputs);
+      const answer = await postAxiosCall("/products/createProduct", inputs);
       if (answer) {
         Swal.fire({
           title: "Success",
@@ -206,7 +206,7 @@ function GlobalForm(props) {
     }
   };
   const remove = async () => {
-    const answer = await deleteAxiosCall("/products", inputs._id);
+    const answer = await postAxiosCall("/products/deleteProduct", inputs);
     if (answer) {
       Swal.fire({
         title: "Success",
@@ -234,9 +234,7 @@ function GlobalForm(props) {
       });
       return;
     }
-    const answer = await updateAxiosCall("/products", inputs.sku, inputs);
-
-    "answer", answer;
+    const answer = await postAxiosCall("/products/updateProduct", inputs);
     if (answer) {
       Swal.fire({
         title: "Success",
