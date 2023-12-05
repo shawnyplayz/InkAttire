@@ -55,7 +55,15 @@ app.get("/products", productRoutes.getProduct);
 app.post("/products/updateProduct", requireAuth, productRoutes.updateProduct);
 app.post(`/products/createProduct`, requireAuth, productRoutes.createProduct);
 app.post("/products/deleteProduct", requireAuth, productRoutes.deleteProduct);
-app.use("/catalogue", requireAuth, catalogueRoutes);
+app.get("/catalogue", catalogueRoutes.getCatalogue);
+app.post("/catalogue", requireAuth, catalogueRoutes.createCatalogue);
+app.post(
+  "/catalogue/deleteClothing/",
+  requireAuth,
+  catalogueRoutes.deleteClothing
+);
+app.post("/catalogue/deleteGenre/", requireAuth, catalogueRoutes.deleteGenre);
+app.post("/catalogue", catalogueRoutes.createCatalogue);
 app.post("/signup", userRoutes.signup);
 app.post("/login", userRoutes.login);
 app.get("/check-auth", requireAuth, userRoutes.checkAuth);

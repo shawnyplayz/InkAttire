@@ -3,7 +3,7 @@ const router = express.Router();
 const catalogue = require("../models/catalogue");
 const products = require("../models/products");
 const cg = ["Unisex", "Men", "Women", "Kids"];
-router.get("/", async (req, res) => {
+const getCatalogue = async (req, res) => {
   try {
     let getCata = await catalogue.find({});
     if (getCata) {
@@ -29,9 +29,9 @@ router.get("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-});
+};
 
-router.post("/", async (req, res) => {
+const createCatalogue = async (req, res) => {
   const createCata = new catalogue({
     clothingType: req.body?.clothingType,
     genre: req.body?.genre,
@@ -67,51 +67,60 @@ router.post("/", async (req, res) => {
       }
     }
   }
-});
+};
 
-router.post("/deleteClothing/", async (req, res) => {
-  try {
-    if (req.body.clothingType) {
-      let checkClothing = await products.findOne({
-        clothingType: req.body.clothingType,
-      });
-      if (checkClothing) {
-        res.status(500).json({
-          message:
-            "Cannot delete a Category of clothing when associated with a product!",
+const deleteClothing =
+  ("/deleteClothing/",
+  async (req, res) => {
+    try {
+      if (req.body.clothingType) {
+        let checkClothing = await products.findOne({
+          clothingType: req.body.clothingType,
         });
+        if (checkClothing) {
+          res.status(500).json({
+            message:
+              "Cannot delete a Category of clothing when associated with a product!",
+          });
+        } else {
+          await catalogue.deleteOne({ clothingType: req.body.clothingType });
+          res
+            .status(200)
+            .json({ message: "Successfully deleted a Type of Clothing!" });
+        }
       } else {
-        await catalogue.deleteOne({ clothingType: req.body.clothingType });
-        res
-          .status(200)
-          .json({ message: "Successfully deleted a Type of Clothing!" });
+        res.status(401).json({ message: "Cannot delete a null value!" });
       }
-    } else {
-      res.status(401).json({ message: "Cannot delete a null value!" });
+    } catch (error) {
+      res.status(401).json({ message: error });
     }
-  } catch (error) {
-    res.status(401).json({ message: error });
-  }
-});
-router.post("/deleteGenre/", async (req, res) => {
-  try {
-    if (req.body.genre) {
-      let checkGenre = await products.findOne({
-        genre: req.body.genre,
-      });
-      if (checkGenre) {
-        res.status(500).json({
-          message: "Cannot delete this genre when associated with a product!",
+  });
+const deleteGenre =
+  ("/deleteGenre/",
+  async (req, res) => {
+    try {
+      if (req.body.genre) {
+        let checkGenre = await products.findOne({
+          genre: req.body.genre,
         });
+        if (checkGenre) {
+          res.status(500).json({
+            message: "Cannot delete this genre when associated with a product!",
+          });
+        } else {
+          await catalogue.deleteOne({ genre: req.body.genre });
+          res.status(200).json({ message: "Successfully deleted a Genre!" });
+        }
       } else {
-        await catalogue.deleteOne({ genre: req.body.genre });
-        res.status(200).json({ message: "Successfully deleted a Genre!" });
+        res.status(401).json({ message: "Cannot delete a null value!" });
       }
-    } else {
-      res.status(401).json({ message: "Cannot delete a null value!" });
+    } catch (error) {
+      res.status(401).json({ message: error });
     }
-  } catch (error) {
-    res.status(401).json({ message: error });
-  }
-});
-module.exports = router;
+  });
+module.exports = {
+  getCatalogue,
+  createCatalogue,
+  deleteClothing,
+  deleteGenre,
+};
