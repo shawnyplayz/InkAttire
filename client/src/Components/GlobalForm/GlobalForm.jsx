@@ -12,6 +12,7 @@ import {
   InputNumber,
   Radio,
   Slider,
+  Space,
   Spin,
   Switch,
   TreeSelect,
@@ -23,6 +24,7 @@ import {
   postAxiosCall,
   updateAxiosCall,
 } from "../../Axios/UniversalAxiosCalls";
+import { SearchOutlined } from "@ant-design/icons";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -57,10 +59,12 @@ function GlobalForm(props) {
     },
   ];
   const [inputs, setInputs] = useState({});
+  const [quantity, setQuantity] = useState([]);
+  const [quantityDk, setQuantityDk] = useState([]);
   const [imageClone, setImageClone] = useState(props?.record?.productImages);
   const [clothingOptions, setClothingOptions] = useState(null);
   const [genreOptions, setGenreOptions] = useState(null);
-  const [clothingFit, setClothingFit] = useState(null);
+  const [gender, setGender] = useState(null);
   const [imageArray, setImageArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const priceRef = useRef();
@@ -76,7 +80,7 @@ function GlobalForm(props) {
   useEffect(() => {
     if (
       Number(priceRef.current.input.value) === inputs?.price ||
-      Number(quantityRef.current.input.value) === inputs?.quantity ||
+      Number(quantityRef.current?.input?.value) === inputs?.quantity ||
       Number(discount_percentRef.current.input.value) ===
         inputs?.discount_percent
     ) {
@@ -93,7 +97,35 @@ function GlobalForm(props) {
         totalPrice: _totalPrice,
       });
     }
-  }, [inputs?.price, inputs?.quantity, inputs?.discount_percent]);
+  }, [inputs?.price, inputs?.discount_percent]);
+  useEffect(() => {
+    setQuantity(props?.record?.quantity?.quantityLight);
+    setQuantityDk(props?.record?.quantity?.quantityDark);
+  }, [props?.record?.quantity]);
+  //To check if the object is empty
+  const isEmpty = () => {
+    for (const prop in inputs) {
+      if (Object.hasOwn(inputs, prop)) {
+        return false;
+      }
+    }
+    return true;
+  };
+  useEffect(() => {
+    if (!isEmpty()) {
+      let totalQuant = [
+        {
+          quantityLight: quantity,
+          quantityDark: quantityDk,
+        },
+      ];
+      setInputs({
+        ...inputs,
+        quantity: totalQuant[0],
+      });
+    }
+  }, [quantity, quantityDk]);
+
   const callCatalogue = async () => {
     const getOptions = await getAxiosCall("/catalogue");
     let clothingOptions = getOptions?.data?.clothingType;
@@ -108,13 +140,13 @@ function GlobalForm(props) {
         label: el.genre,
         value: el.genre,
       }));
-      const clothingFit = cg?.map((el) => ({
+      const gender = cg?.map((el) => ({
         label: el,
         value: el,
       }));
       setClothingOptions(collectClothing);
       setGenreOptions(collectGenre);
-      setClothingFit(clothingFit);
+      setGender(gender);
     }
   };
   const getBase64 = (file) =>
@@ -134,6 +166,7 @@ function GlobalForm(props) {
           B64Array.push(base64String);
         }
         let dummyObj = { productImages: [...B64Array] };
+        debugger;
         asd = Object.assign(inputs, { productImages: dummyObj?.productImages });
         setInputs({ ...inputs, productImages: asd });
       }
@@ -155,6 +188,7 @@ function GlobalForm(props) {
   };
 
   const submit = async () => {
+    debugger;
     if (
       inputs?.productImages?.length === 0 ||
       !inputs?.productImages ||
@@ -180,6 +214,7 @@ function GlobalForm(props) {
       return;
     }
     try {
+      debugger;
       const answer = await postAxiosCall("/products/createProduct", inputs);
       if (answer) {
         Swal.fire({
@@ -234,6 +269,7 @@ function GlobalForm(props) {
       });
       return;
     }
+
     const answer = await postAxiosCall("/products/updateProduct", inputs);
     if (answer) {
       Swal.fire({
@@ -257,7 +293,6 @@ function GlobalForm(props) {
           key != "sales" &&
           key != "__v"
         ) {
-          // const el = inputs[key];
           Swal.fire({
             title: "Error",
             text: `${key} can not be zero`,
@@ -271,26 +306,47 @@ function GlobalForm(props) {
     }
     switch (props.pageMode) {
       case "Add":
-        if (!inputs.hasOwnProperty("size")) {
-          Swal.fire({
+        if (!quantity && !quantityDk) {
+          return Swal.fire({
             title: "Error",
-            text: "Please select a size",
+            text: "Please Enter Quantity",
             icon: "error",
             confirmButtonText: "ok",
             allowOutsideClick: false,
           });
-          return;
         }
-        if (!inputs.hasOwnProperty("skinShade")) {
-          Swal.fire({
-            title: "Error",
-            text: "Please select a Skin Colour",
-            icon: "error",
-            confirmButtonText: "ok",
-            allowOutsideClick: false,
-          });
-          return;
+        let isEmptyObject_Li;
+        let isEmptyObject_Dk;
+        let allValuesAreZero_Li;
+        let allValuesAreZero_Dk;
+        if (quantity) {
+          debugger;
+          isEmptyObject_Li = Object.keys(quantity)?.length === 0;
+          // Check if all values are zero
+          allValuesAreZero_Li = Object.values(quantity)?.every(
+            (value) => value === 0
+          );
         }
+        if (quantityDk) {
+          isEmptyObject_Dk = Object.keys(quantityDk)?.length === 0;
+          allValuesAreZero_Dk = Object.values(quantityDk)?.every(
+            (value) => value === 0
+          );
+          if (
+            isEmptyObject_Li ||
+            (allValuesAreZero_Li && isEmptyObject_Dk) ||
+            allValuesAreZero_Dk
+          ) {
+            return Swal.fire({
+              title: "Error",
+              text: "Please Enter Quantity",
+              icon: "error",
+              confirmButtonText: "ok",
+              allowOutsideClick: false,
+            });
+          }
+        }
+
         if (!inputs.hasOwnProperty("clothingType")) {
           Swal.fire({
             title: "Error",
@@ -311,7 +367,7 @@ function GlobalForm(props) {
           });
           return;
         }
-        if (!inputs.hasOwnProperty("clothingFit")) {
+        if (!inputs.hasOwnProperty("gender")) {
           Swal.fire({
             title: "Error",
             text: "Please select a Clothing fit",
@@ -350,6 +406,48 @@ function GlobalForm(props) {
         });
         break;
       case "Update":
+        let isEmptyObject_Li_Update;
+        let isEmptyObject_Dk_Update;
+        let allValuesAreZero_Li_Update;
+        let allValuesAreZero_Dk_Update;
+        let count = 0;
+        debugger;
+        if (quantity) {
+          isEmptyObject_Li_Update = Object.keys(quantity)?.length === 0;
+          if (!isEmptyObject_Li_Update) {
+            // Check if all values are zero
+            allValuesAreZero_Li_Update = Object.values(quantity)?.every(
+              (value) => value === 0
+            );
+          }
+          if (allValuesAreZero_Li_Update) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+        if (quantityDk) {
+          isEmptyObject_Dk_Update = Object.keys(quantityDk)?.length === 0;
+          if (!isEmptyObject_Dk_Update) {
+            allValuesAreZero_Dk_Update = Object.values(quantityDk)?.every(
+              (value) => value === 0
+            );
+          }
+          if (allValuesAreZero_Dk_Update) {
+            count++;
+          }
+        } else {
+          count++;
+        }
+        if (count == 2) {
+          return Swal.fire({
+            title: "Error",
+            text: "Please Enter Quantity",
+            icon: "error",
+            confirmButtonText: "ok",
+            allowOutsideClick: false,
+          });
+        }
         await convertAllToBase64();
         Swal.fire({
           title: "info",
@@ -360,6 +458,7 @@ function GlobalForm(props) {
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
+            console.log("inputs", inputs);
             update();
           }
         });
@@ -572,30 +671,90 @@ function GlobalForm(props) {
                   htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Quantity
+                  Quantity - Light Skin Shade
                 </label>
-                <Input
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  // defaultValue={Number(1)}
-                  required
-                  ref={quantityRef}
-                  type="number"
-                  id="quantity"
-                  name="quantity"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  onChange={(e) => {
-                    setInputs({
-                      ...inputs,
-                      [e.target.name]: Number(e.target.value),
-                    });
-                  }}
-                  value={inputs?.quantity}
-                />
+
+                {opt?.map((el) => {
+                  return (
+                    <Space.Compact>
+                      <Input
+                        style={{
+                          width: "40%",
+                        }}
+                        defaultValue={el.label}
+                        disabled
+                        value={el?.label}
+                      />
+                      <InputNumber
+                        style={{
+                          width: "60%",
+                        }}
+                        defaultValue="0"
+                        disabled={
+                          props?.pageMode === "Delete" ||
+                          props?.pageMode === "View"
+                            ? true
+                            : false
+                        }
+                        name={el.value}
+                        onChange={(e) => {
+                          let asd = {
+                            ...quantity,
+                            [e.target.name]: Number(e),
+                          };
+                          setQuantity(asd);
+                        }}
+                        value={quantity?.[el.value]}
+                      />
+                    </Space.Compact>
+                  );
+                })}
               </div>
+              <div>
+                <label
+                  htmlFor="number"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Quantity - Dark Skin Shade
+                </label>
+                {opt?.map((el) => {
+                  return (
+                    <Space.Compact>
+                      <Input
+                        style={{
+                          width: "40%",
+                        }}
+                        defaultValue={el.label}
+                        disabled
+                        value={el?.label}
+                      />
+                      <InputNumber
+                        style={{
+                          width: "60%",
+                        }}
+                        ty
+                        defaultValue="0"
+                        disabled={
+                          props?.pageMode === "Delete" ||
+                          props?.pageMode === "View"
+                            ? true
+                            : false
+                        }
+                        name={el.value}
+                        onChange={(e) => {
+                          let asd = {
+                            ...quantityDk,
+                            [e.target.name]: Number(e),
+                          };
+                          setQuantityDk(asd);
+                        }}
+                        value={quantityDk?.[el.value]}
+                      />
+                    </Space.Compact>
+                  );
+                })}
+              </div>
+
               <div>
                 <label
                   htmlFor="number"
@@ -654,7 +813,7 @@ function GlobalForm(props) {
                   id="savings"
                   name="savings"
                   className="mt-1 p-2 block w-full border rounded-md"
-                  value={inputs?.savings}
+                  value={inputs?.savings ? inputs?.savings : 0}
                 />
               </div>
               <div>
@@ -662,7 +821,7 @@ function GlobalForm(props) {
                   htmlFor="number"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Select Size
+                  Gender{" "}
                 </label>
                 <select
                   disabled={
@@ -671,84 +830,15 @@ function GlobalForm(props) {
                       : false
                   }
                   required
-                  value={inputs?.size}
+                  value={inputs?.gender}
                   onChange={(e) => {
-                    setInputs({ ...inputs, size: e.target.value });
+                    setInputs({ ...inputs, gender: e.target.value });
                   }}
-                  name="size"
-                  size="large"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                  placeholder="Enter a Size"
-                >
-                  {opt.map((el) => {
-                    return (
-                      <>
-                        <option value="" selected disabled hidden>
-                          Choose here
-                        </option>
-                        <option value={el.value}>{el.label}</option>
-                      </>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Select Skin Shade
-                </label>
-                <select
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  required
-                  value={inputs?.skinShade}
-                  onChange={(e) => {
-                    setInputs({ ...inputs, skinShade: e.target.value });
-                  }}
-                  name="skinShade"
+                  name="gender"
                   size="large"
                   className="mt-1 p-2 block w-full border rounded-md"
                 >
-                  {shadeOpt?.map((el) => {
-                    return (
-                      <>
-                        <option value="" selected disabled hidden>
-                          Choose here
-                        </option>
-                        <option value={el.value}>{el.label}</option>
-                      </>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label
-                  htmlFor="number"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Select Clothing Fit
-                </label>
-                <select
-                  disabled={
-                    props?.pageMode === "Delete" || props?.pageMode === "View"
-                      ? true
-                      : false
-                  }
-                  required
-                  value={inputs?.clothingFit}
-                  onChange={(e) => {
-                    setInputs({ ...inputs, clothingFit: e.target.value });
-                  }}
-                  name="clothingFit"
-                  size="large"
-                  className="mt-1 p-2 block w-full border rounded-md"
-                >
-                  {clothingFit?.map((el) => {
+                  {gender?.map((el) => {
                     return (
                       <>
                         <option value="" selected disabled hidden>

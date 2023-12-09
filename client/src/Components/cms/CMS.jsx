@@ -55,7 +55,7 @@ function CMS() {
   };
   const deleteCategoryImage = async (id) => {
     const answer = await postAxiosCall("/cms/deleteCategory", { id });
-    debugger;
+
     if (answer) {
       Swal.fire({
         title: "Success",

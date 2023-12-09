@@ -52,51 +52,50 @@ const getProduct = async (req, res, next) => {
   }
 };
 //Creating One
-const createProduct =
-  ("/",
-  async (req, res, next) => {
-    const uploadPromises = req.body.productImages?.map((base64Data) => {
-      // Upload each image to Cloudinary
-      return cloudinary.uploader.upload(base64Data, {
-        folder: "productImages", // Specify the folder for uploaded images
-      });
+const createProduct = async (req, res, next) => {
+  const uploadPromises = req.body.productImages?.map((base64Data) => {
+    // Upload each image to Cloudinary
+    return cloudinary.uploader.upload(base64Data, {
+      folder: "productImages", // Specify the folder for uploaded images
     });
-
-    const uploadedImages = await Promise.all(uploadPromises);
-
-    const createProd = new products({
-      sku: req.body.sku,
-      name: req.body.name,
-      title: req.body.title,
-      Length: req.body.Length,
-      width: req.body.width,
-      price: req.body.price,
-      totalPrice: req.body.totalPrice,
-      discount_percent: req.body.discount_percent,
-      savings: req.body.savings,
-      quantity: req.body.quantity,
-      size: req.body.size,
-      description: req.body.description,
-      productImages: uploadedImages,
-      clothingType: req.body.clothingType,
-      genre: req.body.genre,
-      skinShade: req.body.skinShade,
-    });
-    const querySku = await products.findOne({ sku: createProd.sku });
-    "querySku==>", querySku;
-    if (createProd.sku === querySku?.sku) {
-      ("SKU name already EXISTS");
-      res.status(500).json({ message: "SKU name already exists" });
-      return;
-    } else {
-      try {
-        await createProd.save();
-        res.status(201).json({ message: "Successfully Added a Product" });
-      } catch (error) {
-        res.status(400).json({ message: error.message });
-      }
-    }
   });
+
+  const uploadedImages = await Promise.all(uploadPromises);
+
+  const createProd = new products({
+    sku: req.body.sku,
+    name: req.body.name,
+    title: req.body.title,
+    Length: req.body.Length,
+    width: req.body.width,
+    price: req.body.price,
+    totalPrice: req.body.totalPrice,
+    discount_percent: req.body.discount_percent,
+    savings: req.body.savings,
+    quantity: req.body.quantity,
+    // size: req.body.size,
+    description: req.body.description,
+    productImages: uploadedImages,
+    clothingType: req.body.clothingType,
+    genre: req.body.genre,
+    gender: req.body.gender,
+    // skinShade: req.body.skinShade,
+  });
+  const querySku = await products.findOne({ sku: createProd.sku });
+  "querySku==>", querySku;
+  if (createProd.sku === querySku?.sku) {
+    ("SKU name already EXISTS");
+    res.status(500).json({ message: "SKU name already exists" });
+    return;
+  } else {
+    try {
+      await createProd.save();
+      res.status(201).json({ message: "Successfully Added a Product" });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+};
 //Updating One
 const updateProduct = async (req, res, next) => {
   try {

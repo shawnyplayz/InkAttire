@@ -15,7 +15,7 @@ const productsSchema = new mongoose.Schema({
     require: true,
   },
   quantity: {
-    type: Number,
+    type: Object,
     required: true,
   },
   discount_percent: {
@@ -34,10 +34,10 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
-  size: {
-    type: String,
-    required: true,
-  },
+  // size: {
+  //   type: String,
+  //   required: true,
+  // },
   description: {
     type: String,
     require: true,
@@ -71,10 +71,14 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     require: false,
   },
-  skinShade: {
+  gender: {
     type: String,
     require: true,
   },
+  // skinShade: {
+  //   type: String,
+  //   require: true,
+  // },
 });
 
 module.exports = mongoose.model("products", productsSchema);
