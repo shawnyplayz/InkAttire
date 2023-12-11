@@ -698,9 +698,10 @@ function GlobalForm(props) {
                         }
                         name={el.value}
                         onChange={(e) => {
+                          debugger;
                           let asd = {
                             ...quantity,
-                            [e.target.name]: Number(e),
+                            [el.value]: Number(e),
                           };
                           setQuantity(asd);
                         }}
@@ -744,7 +745,7 @@ function GlobalForm(props) {
                         onChange={(e) => {
                           let asd = {
                             ...quantityDk,
-                            [e.target.name]: Number(e),
+                            [el.value]: Number(e),
                           };
                           setQuantityDk(asd);
                         }}

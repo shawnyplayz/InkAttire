@@ -19,14 +19,9 @@ function ProductTable(props) {
       key: "name",
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
     },
     {
       title: "Price",
@@ -34,14 +29,19 @@ function ProductTable(props) {
       key: "price",
     },
     {
+      title: "Genre",
+      dataIndex: "genre",
+      key: "genre",
+    },
+    {
       title: "Discount (%)",
       dataIndex: "discount_percent",
       key: "discount_percent",
     },
     {
-      title: "Size",
-      dataIndex: "size",
-      key: "size",
+      title: "Sales",
+      dataIndex: "sales",
+      key: "sales",
     },
   ];
   const [result, setResult] = useState(null);
@@ -49,7 +49,7 @@ function ProductTable(props) {
   const navigateTo = useNavigate();
   useEffect(() => {
     //Use Effect is being called twice
-    
+
     answer();
   }, []);
   const answer = async () => {

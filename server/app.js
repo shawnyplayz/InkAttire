@@ -52,6 +52,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 app.get("/products", productRoutes.getAllProducts);
 app.get("/products", productRoutes.getProduct);
+app.get("/products/gender", productRoutes.getGenderedProducts);
 app.post("/products/updateProduct", requireAuth, productRoutes.updateProduct);
 app.post(`/products/createProduct`, requireAuth, productRoutes.createProduct);
 app.post("/products/deleteProduct", requireAuth, productRoutes.deleteProduct);
