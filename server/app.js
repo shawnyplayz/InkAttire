@@ -22,6 +22,7 @@ db.once("open", () => {
 });
 
 const productRoutes = require("./api/routes/products");
+const sortingRoutes = require("./api/routes/sorting");
 const userRoutes = require("./api/routes/users");
 const cmsRoutes = require("./api/routes/cms");
 const catalogueRoutes = require("./api/routes/catalogue");
@@ -34,6 +35,7 @@ const options = {
     "http://localhost:3000",
     "http://localhost:3001",
     "https://inklothes.com",
+    "https://dev.inklothes.com",
     "https://admin.inklothes.com",
   ],
 };
@@ -52,7 +54,7 @@ app.use("/uploads", express.static("uploads"));
 app.use(morgan("dev"));
 app.get("/products", productRoutes.getAllProducts);
 app.get("/products", productRoutes.getProduct);
-app.get("/products/gender", productRoutes.getGenderedProducts);
+app.get("/products/gender", sortingRoutes.getGenderedProducts);
 app.post("/products/updateProduct", requireAuth, productRoutes.updateProduct);
 app.post(`/products/createProduct`, requireAuth, productRoutes.createProduct);
 app.post("/products/deleteProduct", requireAuth, productRoutes.deleteProduct);

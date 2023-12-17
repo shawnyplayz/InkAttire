@@ -144,19 +144,10 @@ const deleteProduct = async (req, res, next) => {
   next();
 };
 
-const getGenderedProducts = async (req, res, next) => {
-  try {
-    let findGender = await products.find({ gender: req.query.gender });
-    res.status(200).json(findGender);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 module.exports = {
   getAllProducts,
   getProduct,
   createProduct,
   updateProduct,
   deleteProduct,
-  getGenderedProducts,
 };
