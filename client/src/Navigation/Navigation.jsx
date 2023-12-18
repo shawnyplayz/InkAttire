@@ -22,6 +22,8 @@ import Robots from "../Components/Robots/Robots";
 import CatalogueManagement from "../Components/catalogueManagement/CatalogueManagement";
 import CMS from "../Components/cms/CMS";
 import Categories from "../Categories/Categories";
+import ViewUser from "../Components/viewUsers/ViewUser";
+
 
 function Navigation(props) {
   const location = useLocation();
@@ -71,6 +73,11 @@ function Navigation(props) {
                 path="/updateproduct"
                 element={<ProductTable pageMode="Update" />}
               />
+              <Route
+                path="/viewusers"
+                element={<ViewUser />}
+              />
+
               <Route path="/updateinner" element={<UpdateInner />} />
               <Route path="/cms" element={<CMS />} />
               <Route path="/categories" element={<Categories />} />
