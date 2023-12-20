@@ -42,7 +42,7 @@ function ViewUser(props) {
   ];
 
   useEffect(() => {
-   
+    fetchRes();
   }, [])
   
 
@@ -73,11 +73,11 @@ function ViewUser(props) {
         </h1>
       </div>
 
-      <div className="flex justify-center items-center">
+      {/* <div className="flex justify-center items-center">
         <Button type="primary" onClick={fetchRes} className="text-black">
           Click to Check Users
         </Button>
-      </div>
+      </div> */}
 
       <PageWrapper>
         <Table
