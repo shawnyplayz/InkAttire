@@ -43,7 +43,6 @@ function Home(props) {
   const navigateTo = useNavigate();
   const fetchRes = async () => {
     const res = await getAxiosCall("/users");
-
     setResults(res.data);
   };
   const logOut = async () => {

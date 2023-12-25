@@ -166,7 +166,7 @@ function GlobalForm(props) {
           B64Array.push(base64String);
         }
         let dummyObj = { productImages: [...B64Array] };
-        debugger;
+
         asd = Object.assign(inputs, { productImages: dummyObj?.productImages });
         setInputs({ ...inputs, productImages: asd });
       }
@@ -178,7 +178,7 @@ function GlobalForm(props) {
           const base64String = await getBase64(imageArray[i]?.originFileObj);
           B64Array.push(base64String);
         }
-        let dummyObj = [...inputs?.productImages];
+        let dummyObj = [...(inputs && inputs?.productImages)];
 
         dummyObj = [...dummyObj, ...B64Array];
         asd = Object.assign(inputs, { productImages: dummyObj });
@@ -188,7 +188,6 @@ function GlobalForm(props) {
   };
 
   const submit = async () => {
-    debugger;
     if (
       inputs?.productImages?.length === 0 ||
       !inputs?.productImages ||
@@ -214,7 +213,6 @@ function GlobalForm(props) {
       return;
     }
     try {
-      debugger;
       const answer = await postAxiosCall("/products/createProduct", inputs);
       if (answer) {
         Swal.fire({
@@ -320,7 +318,6 @@ function GlobalForm(props) {
         let allValuesAreZero_Li;
         let allValuesAreZero_Dk;
         if (quantity) {
-          debugger;
           isEmptyObject_Li = Object.keys(quantity)?.length === 0;
           // Check if all values are zero
           allValuesAreZero_Li = Object.values(quantity)?.every(
@@ -411,7 +408,7 @@ function GlobalForm(props) {
         let allValuesAreZero_Li_Update;
         let allValuesAreZero_Dk_Update;
         let count = 0;
-        debugger;
+
         if (quantity) {
           isEmptyObject_Li_Update = Object.keys(quantity)?.length === 0;
           if (!isEmptyObject_Li_Update) {
@@ -698,7 +695,6 @@ function GlobalForm(props) {
                         }
                         name={el.value}
                         onChange={(e) => {
-                          debugger;
                           let asd = {
                             ...quantity,
                             [el.value]: Number(e),
